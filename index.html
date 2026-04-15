@@ -3,26 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>All Links Extractor PRO – Extract, Analyze & Export Links from Any Website</title>
-
-<meta name="description" content="Free online link extractor tool to extract, analyze, and export all links from any website. Supports images, videos, PDFs, and bulk URL export in CSV, JSON, and TXT formats.">
-
-<meta name="keywords" content="link extractor, url extractor, extract links from website, website link scraper, seo link analyzer, bulk url extractor, html link extractor, web scraping tool, export links csv json txt">
-
-<meta name="author" content="Kirti Kant Pareek">
-
-<meta name="robots" content="index, follow">
-
-<!-- Open Graph (for social sharing) -->
-<meta property="og:title" content="All Links Extractor PRO – Smart Link Scraper Tool">
-<meta property="og:description" content="Extract, filter, analyze, and export links from any website instantly. Powerful SEO and scraping tool.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://your-username.github.io/repo-name/">
-
-<!-- Twitter (important for sharing) -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="All Links Extractor PRO">
-<meta name="twitter:description" content="Advanced link extractor with analytics and export features.">
+<title>All Links Extractor PRO – Smart Link Scraper & Export Tool</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -150,7 +131,6 @@ body {
 }
 
 .btn-primary:hover::after { opacity: 1; }
-
 .btn-primary:active { transform: translateY(0); }
 
 .btn-ghost {
@@ -170,6 +150,19 @@ body {
   color: var(--text-primary);
   border-color: var(--border-active);
 }
+
+.btn-danger {
+  background: rgba(239,68,68,0.1);
+  color: var(--danger);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-danger:hover { background: rgba(239,68,68,0.2); }
 
 .btn-icon {
   width: 36px;
@@ -211,6 +204,21 @@ body {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
+.input-plain {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: all 0.3s ease;
+}
+.input-plain::placeholder { color: var(--text-muted); }
+.input-plain:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -229,6 +237,8 @@ body {
 .badge-pdf { background: rgba(239,68,68,0.15); color: #f87171; }
 .badge-file { background: rgba(245,158,11,0.15); color: #fbbf24; }
 .badge-other { background: rgba(107,114,128,0.15); color: #9ca3af; }
+.badge-favorite { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.badge-pinned { background: rgba(99,102,241,0.2); color: var(--accent-light); }
 
 .checkbox-custom {
   width: 18px;
@@ -375,6 +385,7 @@ body {
   transition: all 0.2s ease;
   cursor: default;
   border: 1px solid transparent;
+  position: relative;
 }
 
 .link-row:hover {
@@ -385,6 +396,10 @@ body {
 .link-row.selected {
   background: rgba(99,102,241,0.08);
   border-color: rgba(99,102,241,0.2);
+}
+
+.link-row.favorited {
+  border-left: 3px solid #fbbf24;
 }
 
 .link-url {
@@ -503,6 +518,10 @@ body {
 
 .modal-overlay.open .modal-content {
   transform: scale(1) translateY(0);
+}
+
+.modal-content-wide {
+  max-width: 700px;
 }
 
 .filter-chip {
@@ -687,7 +706,11 @@ body {
   background: var(--bg-card-hover);
 }
 
-.section-hidden { display: none; }
+.history-row.pinned {
+  border-left: 3px solid var(--accent);
+}
+
+.section-hidden { display: none !important; }
 
 .floating-btn {
   position: fixed;
@@ -740,12 +763,132 @@ body {
   justify-content: center;
   flex-shrink: 0;
 }
+
+/* Star / Favorite button */
+.star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 2px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+}
+.star-btn:hover { color: #fbbf24; transform: scale(1.2); }
+.star-btn.starred { color: #fbbf24; }
+
+/* Note badge */
+.note-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* URL Preview tooltip */
+.url-preview {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: var(--shadow-md);
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.link-row:hover .url-preview { opacity: 1; }
+
+/* Cumulative stats banner */
+.cumulative-banner {
+  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(124,58,237,0.08));
+  border: 1px solid rgba(99,102,241,0.15);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.cumulative-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.search-suggestion {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.search-suggestion:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+
+.import-drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  padding: 32px;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.import-drop-zone:hover, .import-drop-zone.drag-over {
+  border-color: var(--accent);
+  background: rgba(99,102,241,0.05);
+}
+
+/* Rename input inline */
+.rename-input {
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  padding: 4px 8px;
+  outline: none;
+  flex: 1;
+}
+
+/* Notification badge on sidebar */
+.sidebar-badge {
+  margin-left: auto;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* Favorites filter chip */
+.filter-chip.favorites { background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.3); color: #fbbf24; }
+.filter-chip.favorites.active { background: #fbbf24; border-color: #fbbf24; color: #000; }
 </style>
 </head>
 <body>
 
 <div class="bg-mesh"></div>
-
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- Sidebar -->
@@ -756,7 +899,7 @@ body {
     </div>
     <div>
       <div style="font-size:14px;font-weight:700;color:var(--text-primary);line-height:1.2;">Links Extractor</div>
-      <div style="font-size:11px;color:var(--text-muted);font-weight:500;">PRO v2.4.0</div>
+      <div style="font-size:11px;color:var(--text-muted);font-weight:500;">PRO v3.0.0</div>
     </div>
   </div>
 
@@ -776,6 +919,11 @@ body {
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
     Results
   </button>
+  <button class="sidebar-link" data-section="favorites" onclick="switchSection('favorites')">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    Favorites
+    <span class="sidebar-badge" id="favCount" style="display:none;">0</span>
+  </button>
   <button class="sidebar-link" data-section="analytics" onclick="switchSection('analytics')">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     Analytics
@@ -788,6 +936,11 @@ body {
   <button class="sidebar-link" data-section="history" onclick="switchSection('history')">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     History
+    <span class="sidebar-badge" id="historyCount" style="display:none;">0</span>
+  </button>
+  <button class="sidebar-link" data-section="import" onclick="switchSection('import')">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 5 17 10"/><line x1="12" y1="5" x2="12" y2="15"/></svg>
+    Import
   </button>
   <button class="sidebar-link" data-section="settings" onclick="switchSection('settings')">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -795,6 +948,17 @@ body {
   </button>
 
   <div style="flex:1;"></div>
+
+  <!-- Storage indicator -->
+  <div style="padding:0 6px;margin-bottom:8px;">
+    <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;padding:0 8px;">Storage</div>
+    <div style="padding:0 8px;">
+      <div class="progress-bar" style="height:3px;">
+        <div class="progress-fill" id="storageBar" style="width:0%;"></div>
+      </div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="storageSidebarLabel">0 KB used</div>
+    </div>
+  </div>
 
   <div class="glass-card" style="padding:16px;margin:0 6px;">
     <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Upgrade to Premium</div>
@@ -828,6 +992,30 @@ body {
           Extract Links
         </button>
       </div>
+    </div>
+
+    <!-- Cumulative Stats Banner -->
+    <div class="cumulative-banner" id="cumulativeBanner">
+      <div style="width:36px;height:36px;border-radius:10px;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div class="cumulative-stat">
+        <span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">All-Time Links</span>
+        <span style="font-size:18px;font-weight:800;color:var(--text-primary);" id="cumTotal">0</span>
+      </div>
+      <div class="cumulative-stat">
+        <span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">Sessions</span>
+        <span style="font-size:18px;font-weight:800;color:var(--text-primary);" id="cumSessions">0</span>
+      </div>
+      <div class="cumulative-stat">
+        <span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">Favorites</span>
+        <span style="font-size:18px;font-weight:800;color:#fbbf24;" id="cumFavorites">0</span>
+      </div>
+      <div class="cumulative-stat">
+        <span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">Sites Scraped</span>
+        <span style="font-size:18px;font-weight:800;color:#10b981;" id="cumSites">0</span>
+      </div>
+      <div style="margin-left:auto;font-size:11px;color:var(--text-muted);">Persisted across sessions</div>
     </div>
 
     <!-- Stats Row -->
@@ -877,25 +1065,25 @@ body {
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
           <button class="btn-ghost" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 12px;border-radius:14px;" onclick="startExtraction()">
             <div style="width:40px;height:40px;border-radius:12px;background:rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
             </div>
             <span style="font-size:12px;">Extract Now</span>
           </button>
           <button class="btn-ghost" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 12px;border-radius:14px;" onclick="autoScrollExtract()">
             <div style="width:40px;height:40px;border-radius:12px;background:rgba(16,185,129,0.12);display:flex;align-items:center;justify-content:center;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
             </div>
             <span style="font-size:12px;">Auto Scroll</span>
           </button>
           <button class="btn-ghost" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 12px;border-radius:14px;" onclick="downloadAllImages()">
             <div style="width:40px;height:40px;border-radius:12px;background:rgba(236,72,153,0.12);display:flex;align-items:center;justify-content:center;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             </div>
             <span style="font-size:12px;">Get Images</span>
           </button>
           <button class="btn-ghost" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 12px;border-radius:14px;" onclick="openExportModal()">
             <div style="width:40px;height:40px;border-radius:12px;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             </div>
             <span style="font-size:12px;">Export Data</span>
           </button>
@@ -928,23 +1116,27 @@ body {
       </div>
     </div>
 
-    <!-- URL Input -->
+    <!-- URL Input with history suggestions -->
     <div class="glass-card" style="padding:24px;margin-bottom:20px;">
       <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text-secondary);">Target URL</div>
       <div style="position:relative;margin-bottom:16px;">
-        <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        <input type="text" class="input-field" id="extractUrl" placeholder="https://example.com" value="https://github.com">
+        <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);z-index:1;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <input type="text" class="input-field" id="extractUrl" placeholder="https://example.com" value="https://github.com" autocomplete="off" oninput="showUrlSuggestions()" onfocus="showUrlSuggestions()" onblur="setTimeout(hideUrlSuggestions,200)">
+        <div id="urlSuggestions" style="position:absolute;top:100%;left:0;right:0;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:6px;z-index:50;display:none;backdrop-filter:blur(20px);box-shadow:var(--shadow-lg);max-height:200px;overflow-y:auto;margin-top:4px;"></div>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button class="btn-primary" onclick="startExtraction()" style="display:flex;align-items:center;gap:6px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           Start Extraction
         </button>
         <button class="btn-ghost" onclick="autoScrollExtract()" style="display:flex;align-items:center;gap:6px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
           Auto Scroll + Extract
         </button>
       </div>
+
+      <!-- Recent search history chips -->
+      <div id="searchHistoryChips" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;"></div>
     </div>
 
     <!-- Extraction Options -->
@@ -952,46 +1144,28 @@ body {
       <div style="font-size:13px;font-weight:600;margin-bottom:16px;color:var(--text-secondary);">Extraction Options</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">
         <label style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--border-active)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div class="checkbox-custom checked" onclick="this.classList.toggle('checked')"></div>
-          <div>
-            <div style="font-size:13px;font-weight:500;">Anchor Links</div>
-            <div style="font-size:11px;color:var(--text-muted);">a[href] elements</div>
-          </div>
+          <div class="checkbox-custom checked" id="opt-anchor" onclick="this.classList.toggle('checked')"></div>
+          <div><div style="font-size:13px;font-weight:500;">Anchor Links</div><div style="font-size:11px;color:var(--text-muted);">a[href] elements</div></div>
         </label>
         <label style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--border-active)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div class="checkbox-custom checked" onclick="this.classList.toggle('checked')"></div>
-          <div>
-            <div style="font-size:13px;font-weight:500;">Images</div>
-            <div style="font-size:11px;color:var(--text-muted);">img[src] elements</div>
-          </div>
+          <div class="checkbox-custom checked" id="opt-images" onclick="this.classList.toggle('checked')"></div>
+          <div><div style="font-size:13px;font-weight:500;">Images</div><div style="font-size:11px;color:var(--text-muted);">img[src] elements</div></div>
         </label>
         <label style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--border-active)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div class="checkbox-custom checked" onclick="this.classList.toggle('checked')"></div>
-          <div>
-            <div style="font-size:13px;font-weight:500;">Videos</div>
-            <div style="font-size:11px;color:var(--text-muted);">video/source tags</div>
-          </div>
+          <div class="checkbox-custom checked" id="opt-videos" onclick="this.classList.toggle('checked')"></div>
+          <div><div style="font-size:13px;font-weight:500;">Videos</div><div style="font-size:11px;color:var(--text-muted);">video/source tags</div></div>
         </label>
         <label style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--border-active)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div class="checkbox-custom checked" onclick="this.classList.toggle('checked')"></div>
-          <div>
-            <div style="font-size:13px;font-weight:500;">PDFs & Files</div>
-            <div style="font-size:11px;color:var(--text-muted);">iframe/embed links</div>
-          </div>
+          <div class="checkbox-custom checked" id="opt-pdfs" onclick="this.classList.toggle('checked')"></div>
+          <div><div style="font-size:13px;font-weight:500;">PDFs & Files</div><div style="font-size:11px;color:var(--text-muted);">iframe/embed links</div></div>
         </label>
         <label style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--border-active)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div class="checkbox-custom checked" onclick="this.classList.toggle('checked')"></div>
-          <div>
-            <div style="font-size:13px;font-weight:500;">Remove Duplicates</div>
-            <div style="font-size:11px;color:var(--text-muted);">Auto dedup URLs</div>
-          </div>
+          <div class="checkbox-custom checked" id="opt-dedup" onclick="this.classList.toggle('checked')"></div>
+          <div><div style="font-size:13px;font-weight:500;">Remove Duplicates</div><div style="font-size:11px;color:var(--text-muted);">Auto dedup URLs</div></div>
         </label>
         <label style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--border-active)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div class="checkbox-custom checked" onclick="this.classList.toggle('checked')"></div>
-          <div>
-            <div style="font-size:13px;font-weight:500;">Normalize URLs</div>
-            <div style="font-size:11px;color:var(--text-muted);">Absolute paths</div>
-          </div>
+          <div class="checkbox-custom checked" id="opt-normalize" onclick="this.classList.toggle('checked')"></div>
+          <div><div style="font-size:13px;font-weight:500;">Normalize URLs</div><div style="font-size:11px;color:var(--text-muted);">Absolute paths</div></div>
         </label>
       </div>
     </div>
@@ -1016,10 +1190,10 @@ body {
         <h1 style="font-size:28px;font-weight:800;letter-spacing:-0.02em;">Results</h1>
         <p style="font-size:14px;color:var(--text-muted);margin-top:4px;" id="resultsSubtitle">No links extracted yet</p>
       </div>
-      <div style="display:flex;gap:8px;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <div style="position:relative;">
           <button class="btn-ghost" onclick="toggleDropdown('bulkActionsDropdown')" style="display:flex;align-items:center;gap:6px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
             Bulk Actions
           </button>
           <div class="dropdown" id="bulkActionsDropdown">
@@ -1030,6 +1204,10 @@ body {
             <button class="dropdown-item" onclick="deselectAllLinks()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
               Deselect All
+            </button>
+            <button class="dropdown-item" onclick="favoriteSelectedLinks()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Star Selected
             </button>
             <button class="dropdown-item" onclick="copySelectedLinks()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -1047,30 +1225,15 @@ body {
         </div>
         <div style="position:relative;">
           <button class="btn-primary" onclick="toggleDropdown('exportDropdown')" style="display:flex;align-items:center;gap:6px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Export
           </button>
           <div class="dropdown" id="exportDropdown">
-            <button class="dropdown-item" onclick="exportLinks('txt')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              Export as TXT
-            </button>
-            <button class="dropdown-item" onclick="exportLinks('csv')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              Export as CSV
-            </button>
-            <button class="dropdown-item" onclick="exportLinks('json')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              Export as JSON
-            </button>
-            <button class="dropdown-item" onclick="exportLinks('html')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-              Export as HTML
-            </button>
-            <button class="dropdown-item" onclick="copyAllLinks()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              Copy to Clipboard
-            </button>
+            <button class="dropdown-item" onclick="exportLinks('txt')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export as TXT</button>
+            <button class="dropdown-item" onclick="exportLinks('csv')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export as CSV</button>
+            <button class="dropdown-item" onclick="exportLinks('json')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export as JSON</button>
+            <button class="dropdown-item" onclick="exportLinks('html')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Export as HTML</button>
+            <button class="dropdown-item" onclick="copyAllLinks()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy to Clipboard</button>
           </div>
         </div>
       </div>
@@ -1080,27 +1243,19 @@ body {
     <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center;">
       <div style="position:relative;flex:1;min-width:240px;">
         <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" class="input-field" id="searchInput" placeholder="Search links by URL or domain..." oninput="filterLinks()">
+        <input type="text" class="input-field" id="searchInput" placeholder="Search links by URL, domain, or note..." oninput="filterLinks()">
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;" id="filterChips">
         <span class="filter-chip active" onclick="toggleFilter(this,'all')">All</span>
-        <span class="filter-chip" onclick="toggleFilter(this,'external')">
-          <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);"></span>External
-        </span>
-        <span class="filter-chip" onclick="toggleFilter(this,'internal')">
-          <span style="width:6px;height:6px;border-radius:50%;background:var(--success);"></span>Internal
-        </span>
-        <span class="filter-chip" onclick="toggleFilter(this,'image')">
-          <span style="width:6px;height:6px;border-radius:50%;background:#ec4899;"></span>Images
-        </span>
-        <span class="filter-chip" onclick="toggleFilter(this,'video')">
-          <span style="width:6px;height:6px;border-radius:50%;background:#f97316;"></span>Videos
-        </span>
-        <span class="filter-chip" onclick="toggleFilter(this,'pdf')">
-          <span style="width:6px;height:6px;border-radius:50%;background:var(--danger);"></span>PDFs
-        </span>
-        <span class="filter-chip" onclick="toggleFilter(this,'file')">
-          <span style="width:6px;height:6px;border-radius:50%;background:var(--warning);"></span>Files
+        <span class="filter-chip" onclick="toggleFilter(this,'external')"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent);"></span>External</span>
+        <span class="filter-chip" onclick="toggleFilter(this,'internal')"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);"></span>Internal</span>
+        <span class="filter-chip" onclick="toggleFilter(this,'image')"><span style="width:6px;height:6px;border-radius:50%;background:#ec4899;"></span>Images</span>
+        <span class="filter-chip" onclick="toggleFilter(this,'video')"><span style="width:6px;height:6px;border-radius:50%;background:#f97316;"></span>Videos</span>
+        <span class="filter-chip" onclick="toggleFilter(this,'pdf')"><span style="width:6px;height:6px;border-radius:50%;background:var(--danger);"></span>PDFs</span>
+        <span class="filter-chip" onclick="toggleFilter(this,'file')"><span style="width:6px;height:6px;border-radius:50%;background:var(--warning);"></span>Files</span>
+        <span class="filter-chip favorites" onclick="toggleFilter(this,'favorites')">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Favorites
         </span>
       </div>
       <div style="display:flex;gap:6px;align-items:center;">
@@ -1110,12 +1265,13 @@ body {
           <option value="alpha">Alphabetical</option>
           <option value="domain">By Domain</option>
           <option value="type">By Type</option>
+          <option value="favorites">Favorites First</option>
         </select>
       </div>
     </div>
 
     <!-- Selection Info Bar -->
-    <div id="selectionBar" style="display:none;padding:10px 16px;border-radius:12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);margin-bottom:12px;font-size:13px;color:var(--accent-light);display:none;align-items:center;gap:8px;">
+    <div id="selectionBar" style="display:none;padding:10px 16px;border-radius:12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);margin-bottom:12px;font-size:13px;color:var(--accent-light);align-items:center;gap:8px;">
       <span id="selectionCount">0</span> links selected
       <span style="flex:1;"></span>
       <button style="background:none;border:none;color:var(--accent-light);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;text-decoration:underline;" onclick="deselectAllLinks()">Clear</button>
@@ -1130,6 +1286,29 @@ body {
           <div style="font-size:12px;margin-top:4px;">Click "Extract Links" to get started</div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- FAVORITES SECTION -->
+  <section id="section-favorites" class="section-hidden animate-fade-in">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;">
+      <div>
+        <h1 style="font-size:28px;font-weight:800;letter-spacing:-0.02em;">Favorites</h1>
+        <p style="font-size:14px;color:var(--text-muted);margin-top:4px;">Your starred links across all sessions</p>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-ghost" onclick="exportFavorites()" style="display:flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export Favorites
+        </button>
+        <button class="btn-danger" onclick="clearAllFavorites()" style="display:flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Clear All
+        </button>
+      </div>
+    </div>
+    <div class="glass-card" style="padding:8px;">
+      <div class="scroll-area" id="favoritesList" style="max-height:70vh;min-height:200px;"></div>
     </div>
   </section>
 
@@ -1156,6 +1335,12 @@ body {
       <div style="height:300px;"><canvas id="domainsChart"></canvas></div>
     </div>
 
+    <!-- Sessions over time chart -->
+    <div class="glass-card" style="padding:20px;margin-bottom:20px;">
+      <div style="font-size:14px;font-weight:600;margin-bottom:16px;">Sessions History</div>
+      <div style="height:200px;"><canvas id="sessionsChart"></canvas></div>
+    </div>
+
     <div class="glass-card" style="padding:20px;">
       <div style="font-size:14px;font-weight:600;margin-bottom:16px;">Domain Breakdown</div>
       <div id="domainBreakdown" class="scroll-area" style="max-height:400px;"></div>
@@ -1167,14 +1352,66 @@ body {
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;">
       <div>
         <h1 style="font-size:28px;font-weight:800;letter-spacing:-0.02em;">History</h1>
-        <p style="font-size:14px;color:var(--text-muted);margin-top:4px;">Previously extracted sessions</p>
+        <p style="font-size:14px;color:var(--text-muted);margin-top:4px;">Previously extracted sessions — persisted locally</p>
       </div>
-      <button class="btn-ghost" onclick="clearAllHistory()" style="display:flex;align-items:center;gap:6px;color:var(--danger);">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-        Clear All
-      </button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-ghost" onclick="exportAllHistory()" style="display:flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export All
+        </button>
+        <button class="btn-danger" onclick="clearAllHistory()" style="display:flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Clear All
+        </button>
+      </div>
+    </div>
+    <!-- Search History -->
+    <div style="position:relative;margin-bottom:16px;">
+      <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="input-field" id="historySearch" placeholder="Search sessions by URL..." oninput="renderHistory()">
     </div>
     <div id="historyList" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </section>
+
+  <!-- IMPORT SECTION -->
+  <section id="section-import" class="section-hidden animate-fade-in">
+    <div style="margin-bottom:28px;">
+      <h1 style="font-size:28px;font-weight:800;letter-spacing:-0.02em;">Import</h1>
+      <p style="font-size:14px;color:var(--text-muted);margin-top:4px;">Import previously exported links or sessions</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+      <!-- Drop Zone -->
+      <div class="glass-card" style="padding:24px;">
+        <div style="font-size:14px;font-weight:600;margin-bottom:16px;">Upload File</div>
+        <div class="import-drop-zone" id="dropZone" onclick="document.getElementById('importFileInput').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+          <input type="file" id="importFileInput" accept=".json,.csv,.txt" style="display:none;" onchange="handleFileImport(event)">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin:0 auto 12px;display:block;opacity:0.6;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div style="font-size:14px;font-weight:500;margin-bottom:4px;">Drop files here or click to browse</div>
+          <div style="font-size:12px;color:var(--text-muted);">Supports JSON, CSV, TXT exports</div>
+        </div>
+      </div>
+
+      <!-- Paste URLs -->
+      <div class="glass-card" style="padding:24px;">
+        <div style="font-size:14px;font-weight:600;margin-bottom:16px;">Paste URLs</div>
+        <textarea id="pasteUrls" class="input-plain" style="height:120px;resize:none;font-family:'JetBrains Mono',monospace;font-size:12px;" placeholder="Paste URLs here, one per line&#10;https://example.com&#10;https://github.com&#10;..."></textarea>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button class="btn-primary" onclick="importPastedUrls()" style="flex:1;">
+            Import URLs
+          </button>
+          <button class="btn-ghost" onclick="document.getElementById('pasteUrls').value=''">
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Import Preview -->
+    <div class="glass-card" style="padding:20px;" id="importPreview" style="display:none;">
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Import Preview</div>
+      <div id="importPreviewContent"></div>
+    </div>
   </section>
 
   <!-- SETTINGS SECTION -->
@@ -1188,17 +1425,11 @@ body {
       <div style="font-size:14px;font-weight:600;margin-bottom:20px;">Appearance</div>
       <div style="display:flex;flex-direction:column;gap:16px;">
         <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-size:13px;font-weight:500;">Dark Mode</div>
-            <div style="font-size:12px;color:var(--text-muted);">Toggle dark/light theme</div>
-          </div>
+          <div><div style="font-size:13px;font-weight:500;">Dark Mode</div><div style="font-size:12px;color:var(--text-muted);">Toggle dark/light theme</div></div>
           <div class="toggle-switch active" id="darkModeToggle" onclick="toggleDarkMode()"></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-size:13px;font-weight:500;">Auto Detect System Theme</div>
-            <div style="font-size:12px;color:var(--text-muted);">Follow your OS preference</div>
-          </div>
+          <div><div style="font-size:13px;font-weight:500;">Auto Detect System Theme</div><div style="font-size:12px;color:var(--text-muted);">Follow your OS preference</div></div>
           <div class="toggle-switch" id="autoThemeToggle" onclick="toggleAutoTheme()"></div>
         </div>
       </div>
@@ -1208,45 +1439,27 @@ body {
       <div style="font-size:14px;font-weight:600;margin-bottom:20px;">Extraction</div>
       <div style="display:flex;flex-direction:column;gap:16px;">
         <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-size:13px;font-weight:500;">Remove Duplicates</div>
-            <div style="font-size:12px;color:var(--text-muted);">Automatically deduplicate URLs</div>
-          </div>
+          <div><div style="font-size:13px;font-weight:500;">Remove Duplicates</div><div style="font-size:12px;color:var(--text-muted);">Automatically deduplicate URLs</div></div>
           <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-size:13px;font-weight:500;">Normalize URLs</div>
-            <div style="font-size:12px;color:var(--text-muted);">Convert relative to absolute paths</div>
-          </div>
+          <div><div style="font-size:13px;font-weight:500;">Normalize URLs</div><div style="font-size:12px;color:var(--text-muted);">Convert relative to absolute paths</div></div>
           <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-size:13px;font-weight:500;">Filter javascript: and mailto:</div>
-            <div style="font-size:12px;color:var(--text-muted);">Remove non-HTTP links automatically</div>
-          </div>
+          <div><div style="font-size:13px;font-weight:500;">Filter javascript: and mailto:</div><div style="font-size:12px;color:var(--text-muted);">Remove non-HTTP links automatically</div></div>
           <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-size:13px;font-weight:500;">Include Iframes</div>
-            <div style="font-size:12px;color:var(--text-muted);">Extract links from embedded iframes</div>
-          </div>
+          <div><div style="font-size:13px;font-weight:500;">Include Iframes</div><div style="font-size:12px;color:var(--text-muted);">Extract links from embedded iframes</div></div>
           <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-size:13px;font-weight:500;">Context Menu Integration</div>
-            <div style="font-size:12px;color:var(--text-muted);">Right-click to extract links</div>
-          </div>
-          <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+          <div><div style="font-size:13px;font-weight:500;">Auto-save Results</div><div style="font-size:12px;color:var(--text-muted);">Automatically save extracted results</div></div>
+          <div class="toggle-switch active" id="autoSaveToggle" onclick="toggleAutoSave(this)"></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-size:13px;font-weight:500;">Floating Extractor Button</div>
-            <div style="font-size:12px;color:var(--text-muted);">Show mini button on pages</div>
-          </div>
+          <div><div style="font-size:13px;font-weight:500;">Floating Extractor Button</div><div style="font-size:12px;color:var(--text-muted);">Show mini button on pages</div></div>
           <div class="toggle-switch" onclick="this.classList.toggle('active');showToast(this.classList.contains('active')?'Floating button enabled':'Floating button disabled','info')"></div>
         </div>
       </div>
@@ -1257,30 +1470,56 @@ body {
       <div style="display:flex;flex-direction:column;gap:16px;">
         <div>
           <div style="font-size:13px;font-weight:500;margin-bottom:6px;">Default Export Format</div>
-          <select style="width:100%;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-size:13px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;">
+          <select id="defaultExportFormat" style="width:100%;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-size:13px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;" onchange="saveSettings()">
             <option>TXT</option>
             <option>CSV</option>
             <option selected>JSON</option>
             <option>HTML</option>
           </select>
         </div>
+        <div>
+          <div style="font-size:13px;font-weight:500;margin-bottom:6px;">Max Sessions to Keep</div>
+          <select id="maxSessions" style="width:100%;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-size:13px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;" onchange="saveSettings()">
+            <option value="10">10 sessions</option>
+            <option value="20" selected>20 sessions</option>
+            <option value="50">50 sessions</option>
+            <option value="100">100 sessions</option>
+          </select>
+        </div>
         <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-size:13px;font-weight:500;">Group by Category</div>
-            <div style="font-size:12px;color:var(--text-muted);">Separate links by type in exports</div>
-          </div>
+          <div><div style="font-size:13px;font-weight:500;">Group by Category</div><div style="font-size:12px;color:var(--text-muted);">Separate links by type in exports</div></div>
           <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
         </div>
       </div>
     </div>
 
+    <div class="glass-card" style="padding:24px;margin-bottom:16px;">
+      <div style="font-size:14px;font-weight:600;margin-bottom:20px;">Data Management</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <button class="btn-ghost" onclick="exportAllHistory()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;justify-content:flex-start;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export All Sessions (JSON Backup)
+        </button>
+        <button class="btn-ghost" onclick="switchSection('import')" style="display:flex;align-items:center;gap:8px;padding:12px 16px;justify-content:flex-start;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Import Sessions Backup
+        </button>
+        <button class="btn-danger" onclick="clearAllHistory()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;justify-content:flex-start;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Clear All Data &amp; History
+        </button>
+      </div>
+    </div>
+
     <div class="glass-card" style="padding:24px;">
-      <div style="font-size:14px;font-weight:600;margin-bottom:20px;">About</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:20px;">About &amp; Storage</div>
       <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--text-secondary);">
-        <div style="display:flex;justify-content:space-between;"><span>Version</span><span class="mono" style="color:var(--text-primary);">2.4.0</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>Version</span><span class="mono" style="color:var(--text-primary);">3.0.0</span></div>
         <div style="display:flex;justify-content:space-between;"><span>Manifest</span><span class="mono" style="color:var(--text-primary);">V3</span></div>
         <div style="display:flex;justify-content:space-between;"><span>Storage Used</span><span class="mono" style="color:var(--text-primary);" id="storageUsed">0 KB</span></div>
         <div style="display:flex;justify-content:space-between;"><span>Sessions Saved</span><span class="mono" style="color:var(--text-primary);" id="sessionsCount">0</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>Favorites Saved</span><span class="mono" style="color:#fbbf24;" id="favoritesCount">0</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>Total URLs Extracted</span><span class="mono" style="color:var(--text-primary);" id="totalExtracted">0</span></div>
       </div>
     </div>
   </section>
@@ -1298,44 +1537,52 @@ body {
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
       <div style="font-size:18px;font-weight:700;">Export Links</div>
       <button class="btn-icon" onclick="closeExportModal()" style="border:none;background:none;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <div class="export-option" onclick="exportLinks('txt');closeExportModal()">
-        <div class="icon-box" style="background:rgba(107,114,128,0.12);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        </div>
+        <div class="icon-box" style="background:rgba(107,114,128,0.12);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
         <div><div style="font-size:13px;font-weight:600;">TXT</div><div style="font-size:11px;color:var(--text-muted);">Plain text</div></div>
       </div>
       <div class="export-option" onclick="exportLinks('csv');closeExportModal()">
-        <div class="icon-box" style="background:rgba(16,185,129,0.12);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        </div>
+        <div class="icon-box" style="background:rgba(16,185,129,0.12);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
         <div><div style="font-size:13px;font-weight:600;">CSV</div><div style="font-size:11px;color:var(--text-muted);">Spreadsheet</div></div>
       </div>
       <div class="export-option" onclick="exportLinks('json');closeExportModal()">
-        <div class="icon-box" style="background:rgba(99,102,241,0.12);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        </div>
+        <div class="icon-box" style="background:rgba(99,102,241,0.12);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
         <div><div style="font-size:13px;font-weight:600;">JSON</div><div style="font-size:11px;color:var(--text-muted);">Structured data</div></div>
       </div>
       <div class="export-option" onclick="exportLinks('html');closeExportModal()">
-        <div class="icon-box" style="background:rgba(236,72,153,0.12);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        </div>
+        <div class="icon-box" style="background:rgba(236,72,153,0.12);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
         <div><div style="font-size:13px;font-weight:600;">HTML</div><div style="font-size:11px;color:var(--text-muted);">Clickable links</div></div>
       </div>
       <div class="export-option" onclick="copyAllLinks();closeExportModal()" style="grid-column:1/-1;">
-        <div class="icon-box" style="background:rgba(245,158,11,0.12);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        </div>
+        <div class="icon-box" style="background:rgba(245,158,11,0.12);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
         <div><div style="font-size:13px;font-weight:600;">Copy to Clipboard</div><div style="font-size:11px;color:var(--text-muted);">Paste anywhere instantly</div></div>
       </div>
     </div>
     <div style="margin-top:16px;padding:14px;border-radius:12px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);">
       <div style="font-size:12px;font-weight:600;color:var(--accent-light);margin-bottom:4px;">Premium Feature</div>
       <div style="font-size:11px;color:var(--text-muted);">Export to Google Sheets available in PRO plan</div>
+    </div>
+  </div>
+</div>
+
+<!-- Note Modal -->
+<div class="modal-overlay" id="noteModal">
+  <div class="modal-content" style="padding:28px;max-width:440px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div style="font-size:16px;font-weight:700;">Add / Edit Note</div>
+      <button class="btn-icon" onclick="closeNoteModal()" style="border:none;background:none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="mono" id="noteModalUrl" style="font-size:11px;color:var(--text-muted);margin-bottom:12px;word-break:break-all;padding:8px;background:var(--bg-card);border-radius:8px;"></div>
+    <textarea id="noteModalText" class="input-plain" style="height:100px;resize:none;" placeholder="Add a note about this link..."></textarea>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="btn-primary" onclick="saveNote()" style="flex:1;">Save Note</button>
+      <button class="btn-ghost" onclick="closeNoteModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -1349,8 +1596,110 @@ let activeFilter = 'all';
 let currentSection = 'dashboard';
 let historyData = [];
 let chartInstances = {};
+let favoritesData = {}; // url -> {note, starred, date}
+let currentNoteUrl = null;
+let urlSearchHistory = []; // array of recently used URLs
+let settings = { autoSave: true, maxSessions: 20 };
+let cumulativeStats = { totalLinks: 0, sessions: 0, sites: new Set() };
 
-// ==================== SAMPLE DATA GENERATOR ====================
+// ==================== PERSISTENCE LAYER ====================
+const STORAGE_KEYS = {
+  HISTORY: 'linksextractor_history',
+  FAVORITES: 'linksextractor_favorites',
+  CURRENT_LINKS: 'linksextractor_current',
+  URL_HISTORY: 'linksextractor_url_history',
+  SETTINGS: 'linksextractor_settings',
+  CUMULATIVE: 'linksextractor_cumulative',
+  THEME: 'theme'
+};
+
+function saveToStorage(key, data) {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (e) {
+    // If storage is full, try to prune history
+    if (e.name === 'QuotaExceededError') {
+      if (historyData.length > 5) {
+        historyData = historyData.slice(0, 5);
+        historyData.forEach(s => { if (s.links && s.links.length > 100) s.links = s.links.slice(0, 100); });
+        try { localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(historyData)); } catch(e2) {}
+      }
+      showToast('Storage nearly full — older sessions trimmed', 'warning');
+    }
+  }
+}
+
+function loadFromStorage(key, defaultVal) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw === null) return defaultVal;
+    return JSON.parse(raw);
+  } catch (e) {
+    return defaultVal;
+  }
+}
+
+function persistAll() {
+  saveToStorage(STORAGE_KEYS.HISTORY, historyData);
+  saveToStorage(STORAGE_KEYS.FAVORITES, favoritesData);
+  saveToStorage(STORAGE_KEYS.URL_HISTORY, urlSearchHistory);
+  saveToStorage(STORAGE_KEYS.SETTINGS, settings);
+  // Only save links if autoSave is on, and limit to 500 links
+  if (settings.autoSave) {
+    const toSave = extractedLinks.slice(0, 500);
+    saveToStorage(STORAGE_KEYS.CURRENT_LINKS, toSave);
+  }
+  // Save cumulative (convert Set to array)
+  const cumToSave = { ...cumulativeStats, sites: [...cumulativeStats.sites] };
+  saveToStorage(STORAGE_KEYS.CUMULATIVE, cumToSave);
+  updateStorageDisplay();
+}
+
+function loadAll() {
+  historyData = loadFromStorage(STORAGE_KEYS.HISTORY, []);
+  favoritesData = loadFromStorage(STORAGE_KEYS.FAVORITES, {});
+  urlSearchHistory = loadFromStorage(STORAGE_KEYS.URL_HISTORY, []);
+  settings = { ...settings, ...loadFromStorage(STORAGE_KEYS.SETTINGS, {}) };
+  const cum = loadFromStorage(STORAGE_KEYS.CUMULATIVE, { totalLinks: 0, sessions: 0, sites: [] });
+  cumulativeStats = { ...cum, sites: new Set(cum.sites || []) };
+
+  // Restore last extracted links
+  if (settings.autoSave) {
+    const saved = loadFromStorage(STORAGE_KEYS.CURRENT_LINKS, []);
+    if (saved && saved.length > 0) {
+      extractedLinks = saved;
+      filteredLinks = [...extractedLinks];
+    }
+  }
+}
+
+function updateStorageDisplay() {
+  try {
+    let total = 0;
+    for (const key of Object.values(STORAGE_KEYS)) {
+      const val = localStorage.getItem(key);
+      if (val) total += val.length * 2; // UTF-16
+    }
+    const kb = (total / 1024).toFixed(1);
+    const el = document.getElementById('storageUsed');
+    if (el) el.textContent = kb + ' KB';
+    const el2 = document.getElementById('storageSidebarLabel');
+    if (el2) el2.textContent = kb + ' KB used';
+    // Update bar (assume 5MB limit)
+    const pct = Math.min((total / (5 * 1024 * 1024)) * 100, 100);
+    const bar = document.getElementById('storageBar');
+    if (bar) bar.style.width = pct + '%';
+
+    const sessEl = document.getElementById('sessionsCount');
+    if (sessEl) sessEl.textContent = historyData.length;
+    const favEl = document.getElementById('favoritesCount');
+    if (favEl) favEl.textContent = Object.keys(favoritesData).length;
+    const totEl = document.getElementById('totalExtracted');
+    if (totEl) totEl.textContent = cumulativeStats.totalLinks;
+  } catch(e) {}
+}
+
+// ==================== SAMPLE DATA ====================
 const sampleDomains = [
   'github.com','stackoverflow.com','developer.mozilla.org','npmjs.com','typescript-lang.org',
   'tailwindcss.com','vercel.com','netlify.com','aws.amazon.com','cloud.google.com',
@@ -1366,7 +1715,6 @@ function generateSampleLinks(baseUrl) {
   const links = [];
   const baseDomain = baseUrl.replace(/^https?:\/\//, '').split('/')[0];
   const count = 80 + Math.floor(Math.random() * 120);
-
   const types = ['anchor','anchor','anchor','anchor','anchor','anchor','image','image','image','video','pdf','file','anchor','anchor','image'];
   const isInternal = () => Math.random() > 0.45;
 
@@ -1392,7 +1740,7 @@ function generateSampleLinks(baseUrl) {
     }
 
     links.push({
-      url: url,
+      url,
       type: category,
       domain: url.replace(/^https?:\/\//, '').split('/')[0],
       text: generateLinkText(url, type),
@@ -1400,7 +1748,6 @@ function generateSampleLinks(baseUrl) {
     });
   }
 
-  // Remove duplicates
   const seen = new Set();
   return links.filter(l => {
     if (seen.has(l.url)) return false;
@@ -1418,30 +1765,21 @@ function generateLinkText(url, type) {
   return texts[Math.floor(Math.random()*texts.length)];
 }
 
-// ==================== TOAST SYSTEM ====================
+// ==================== TOAST ====================
 function showToast(message, type = 'info', duration = 3000) {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
-
   const icons = {
-    success: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-    error: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
-    info: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
-    warning: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+    success: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    error: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+    info: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+    warning: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
   };
-
-  toast.innerHTML = `<span class="toast-icon">${icons[type] || icons.info}</span><span>${message}</span>`;
+  toast.innerHTML = `<span class="toast-icon">${icons[type]||icons.info}</span><span>${message}</span>`;
   container.appendChild(toast);
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => toast.classList.add('show'));
-  });
-
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 400);
-  }, duration);
+  requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
+  setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, duration);
 }
 
 // ==================== NAVIGATION ====================
@@ -1458,14 +1796,15 @@ function switchSection(name) {
   document.querySelectorAll('.sidebar-link').forEach(l => {
     l.classList.toggle('active', l.dataset.section === name);
   });
-
-  // Close mobile menu
   document.getElementById('sidebar').classList.remove('open');
 
-  // Refresh charts if analytics
   if (name === 'analytics') setTimeout(updateCharts, 100);
   if (name === 'history') renderHistory();
   if (name === 'settings') updateSettingsInfo();
+  if (name === 'favorites') renderFavorites();
+  if (name === 'dashboard') updateCumulativeDisplay();
+  if (name === 'extractor') renderSearchHistoryChips();
+  if (name === 'results' && extractedLinks.length > 0) renderLinks();
 }
 
 // ==================== EXTRACTION ====================
@@ -1476,6 +1815,8 @@ function startExtraction() {
     return;
   }
 
+  // Add to URL search history
+  addToUrlHistory(url);
   switchSection('extractor');
 
   const spinner = document.getElementById('extractSpinner');
@@ -1501,12 +1842,8 @@ function startExtraction() {
   ];
 
   let stepIdx = 0;
-
   function nextStep() {
-    if (stepIdx >= steps.length) {
-      finishExtraction(url);
-      return;
-    }
+    if (stepIdx >= steps.length) { finishExtraction(url); return; }
     const step = steps[stepIdx];
     progressFill.style.width = step.pct + '%';
     progressText.textContent = step.text;
@@ -1514,7 +1851,6 @@ function startExtraction() {
     stepIdx++;
     setTimeout(nextStep, 200 + Math.random() * 300);
   }
-
   setTimeout(nextStep, 300);
 }
 
@@ -1537,37 +1873,98 @@ function finishExtraction(url) {
   selectedLinks.clear();
 
   // Save to history
+  let hostname;
+  try { hostname = new URL(url).hostname; } catch(e) { hostname = url; }
+
   const session = {
     id: Date.now(),
-    url: url,
-    title: new URL(url).hostname + ' - Links Extraction',
+    url,
+    title: hostname + ' — Links Extraction',
     date: new Date().toISOString(),
     totalLinks: extractedLinks.length,
-    links: extractedLinks
+    links: extractedLinks,
+    pinned: false
   };
   historyData.unshift(session);
-  if (historyData.length > 20) historyData.pop();
 
-  // Animate stats
+  // Enforce max sessions
+  const maxS = parseInt(settings.maxSessions) || 20;
+  if (historyData.length > maxS) historyData = historyData.slice(0, maxS);
+
+  // Update cumulative stats
+  cumulativeStats.totalLinks += extractedLinks.length;
+  cumulativeStats.sessions += 1;
+  cumulativeStats.sites.add(hostname);
+
+  // Persist everything
+  persistAll();
+  updateSidebarBadges();
+  updateCumulativeDisplay();
+
   animateStats();
-
-  // Render results
   renderLinks();
   updateDashboard();
   updateRecentSessions();
 
-  showToast(`Extracted ${extractedLinks.length} links from ${new URL(url).hostname}`, 'success');
-
+  showToast(`Extracted ${extractedLinks.length} links from ${hostname}`, 'success');
   setTimeout(() => switchSection('results'), 600);
 }
 
 function downloadAllImages() {
   const imageLinks = extractedLinks.filter(l => l.type === 'image');
-  if (imageLinks.length === 0) {
-    showToast('No images found. Extract links first.', 'warning');
+  if (imageLinks.length === 0) { showToast('No images found. Extract links first.', 'warning'); return; }
+  showToast(`Found ${imageLinks.length} images. Download would start in the extension.`, 'info', 4000);
+}
+
+// ==================== URL SEARCH HISTORY ====================
+function addToUrlHistory(url) {
+  urlSearchHistory = urlSearchHistory.filter(u => u !== url);
+  urlSearchHistory.unshift(url);
+  if (urlSearchHistory.length > 15) urlSearchHistory = urlSearchHistory.slice(0, 15);
+  saveToStorage(STORAGE_KEYS.URL_HISTORY, urlSearchHistory);
+}
+
+function showUrlSuggestions() {
+  const input = document.getElementById('extractUrl').value.toLowerCase();
+  const container = document.getElementById('urlSuggestions');
+  const matches = urlSearchHistory.filter(u => u.toLowerCase().includes(input));
+
+  if (matches.length === 0 || !input) {
+    // Show all recent if empty
+    const recent = urlSearchHistory.slice(0, 5);
+    if (recent.length === 0) { container.style.display = 'none'; return; }
+    container.innerHTML = recent.map(u => `
+      <div class="search-suggestion" onclick="document.getElementById('extractUrl').value='${u.replace(/'/g,"\\'")}';hideUrlSuggestions();">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;">${u}</span>
+      </div>`).join('');
+    container.style.display = 'block';
     return;
   }
-  showToast(`Found ${imageLinks.length} images. Download would start in the extension.`, 'info', 4000);
+
+  container.innerHTML = matches.slice(0, 6).map(u => `
+    <div class="search-suggestion" onclick="document.getElementById('extractUrl').value='${u.replace(/'/g,"\\'")}';hideUrlSuggestions();">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;">${u}</span>
+    </div>`).join('');
+  container.style.display = 'block';
+}
+
+function hideUrlSuggestions() {
+  const container = document.getElementById('urlSuggestions');
+  if (container) container.style.display = 'none';
+}
+
+function renderSearchHistoryChips() {
+  const container = document.getElementById('searchHistoryChips');
+  if (!container) return;
+  if (urlSearchHistory.length === 0) { container.innerHTML = ''; return; }
+  container.innerHTML = '<span style="font-size:11px;color:var(--text-muted);margin-right:4px;align-self:center;">Recent:</span>' +
+    urlSearchHistory.slice(0, 5).map(u => {
+      let hostname;
+      try { hostname = new URL(u).hostname; } catch(e) { hostname = u; }
+      return `<span class="filter-chip" style="font-family:'JetBrains Mono',monospace;font-size:11px;" onclick="document.getElementById('extractUrl').value='${u.replace(/'/g,"\\'")}';showToast('URL loaded','info');">${hostname}</span>`;
+    }).join('');
 }
 
 // ==================== ANIMATED COUNTERS ====================
@@ -1588,13 +1985,11 @@ function animateCounter(id, target) {
   if (!el) return;
   const duration = 800;
   const start = performance.now();
-  const from = 0;
-
   function update(now) {
     const elapsed = now - start;
     const progress = Math.min(elapsed / duration, 1);
     const eased = 1 - Math.pow(1 - progress, 3);
-    el.textContent = Math.round(from + (target - from) * eased);
+    el.textContent = Math.round(target * eased);
     if (progress < 1) requestAnimationFrame(update);
   }
   requestAnimationFrame(update);
@@ -1604,6 +1999,7 @@ function animateCounter(id, target) {
 function renderLinks() {
   const container = document.getElementById('linksList');
   const subtitle = document.getElementById('resultsSubtitle');
+  if (!container) return;
 
   if (filteredLinks.length === 0) {
     container.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;color:var(--text-muted);">
@@ -1611,34 +2007,47 @@ function renderLinks() {
       <div style="font-size:14px;font-weight:500;">No matching links</div>
       <div style="font-size:12px;margin-top:4px;">Try adjusting your search or filters</div>
     </div>`;
-    subtitle.textContent = 'No results';
+    if (subtitle) subtitle.textContent = 'No results';
     return;
   }
 
-  subtitle.textContent = `Showing ${filteredLinks.length} of ${extractedLinks.length} links`;
+  if (subtitle) subtitle.textContent = `Showing ${filteredLinks.length} of ${extractedLinks.length} links`;
 
-  // Virtual scrolling: render up to 200 items
   const maxRender = Math.min(filteredLinks.length, 200);
   let html = '';
 
   for (let i = 0; i < maxRender; i++) {
     const link = filteredLinks[i];
     const isSelected = selectedLinks.has(link.url);
+    const fav = favoritesData[link.url];
+    const isStarred = fav && fav.starred;
+    const hasNote = fav && fav.note;
     const badgeClass = getBadgeClass(link.type);
     const badgeLabel = getBadgeLabel(link.type);
     const typeIcon = getTypeIcon(link.type);
+    const encodedUrl = encodeURIComponent(link.url);
+    const escapedUrl = link.url.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
-    html += `<div class="link-row ${isSelected ? 'selected' : ''}" data-url="${encodeURIComponent(link.url)}" onclick="toggleLinkSelection('${encodeURIComponent(link.url)}', event)" style="animation:fadeInUp 0.3s ease forwards;animation-delay:${Math.min(i * 15, 300)}ms;opacity:0;">
-      <div class="checkbox-custom ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation();toggleLinkSelection('${encodeURIComponent(link.url)}')"></div>
+    html += `<div class="link-row ${isSelected ? 'selected' : ''} ${isStarred ? 'favorited' : ''}" data-url="${encodedUrl}" onclick="toggleLinkSelection('${encodedUrl}', event)" style="animation:fadeInUp 0.3s ease forwards;animation-delay:${Math.min(i * 15, 300)}ms;opacity:0;">
+      <div class="checkbox-custom ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation();toggleLinkSelection('${encodedUrl}')"></div>
+      <button class="star-btn ${isStarred ? 'starred' : ''}" onclick="event.stopPropagation();toggleFavorite('${encodedUrl}')" title="${isStarred ? 'Remove from favorites' : 'Add to favorites'}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="${isStarred ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </button>
       <span class="badge ${badgeClass}">${typeIcon} ${badgeLabel}</span>
       <div style="flex:1;min-width:0;">
-        <div class="link-url" title="${link.url}">${link.url}</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${link.text}</div>
+        <div class="link-url" title="${escapedUrl}">${link.url}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:6px;">
+          <span>${link.text}</span>
+          ${hasNote ? `<span style="color:var(--accent-light);font-size:10px;">● ${fav.note.substring(0,40)}${fav.note.length>40?'…':''}</span>` : ''}
+        </div>
       </div>
-      <button class="btn-icon" style="width:28px;height:28px;border-radius:8px;" onclick="event.stopPropagation();copySingleLink('${encodeURIComponent(link.url)}')" title="Copy link">
+      <button class="btn-icon" style="width:28px;height:28px;border-radius:8px;" onclick="event.stopPropagation();openNoteModal('${encodedUrl}')" title="${hasNote ? 'Edit note' : 'Add note'}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${hasNote ? 'var(--accent)' : 'currentColor'}" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <button class="btn-icon" style="width:28px;height:28px;border-radius:8px;" onclick="event.stopPropagation();copySingleLink('${encodedUrl}')" title="Copy link">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       </button>
-      <button class="btn-icon" style="width:28px;height:28px;border-radius:8px;" onclick="event.stopPropagation();window.open('${link.url}','_blank')" title="Open link">
+      <button class="btn-icon" style="width:28px;height:28px;border-radius:8px;" onclick="event.stopPropagation();window.open('${escapedUrl}','_blank')" title="Open link">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </button>
     </div>`;
@@ -1656,12 +2065,10 @@ function getBadgeClass(type) {
   const map = { external:'badge-external', internal:'badge-internal', image:'badge-image', video:'badge-video', pdf:'badge-pdf', file:'badge-file' };
   return map[type] || 'badge-other';
 }
-
 function getBadgeLabel(type) {
   const map = { external:'External', internal:'Internal', image:'Image', video:'Video', pdf:'PDF', file:'File' };
   return map[type] || 'Other';
 }
-
 function getTypeIcon(type) {
   const map = {
     external:'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
@@ -1674,14 +2081,143 @@ function getTypeIcon(type) {
   return map[type] || '';
 }
 
+// ==================== FAVORITES ====================
+function toggleFavorite(encodedUrl) {
+  const url = decodeURIComponent(encodedUrl);
+  if (!favoritesData[url]) {
+    favoritesData[url] = { starred: true, note: '', date: new Date().toISOString() };
+    showToast('Added to favorites ⭐', 'success');
+  } else {
+    favoritesData[url].starred = !favoritesData[url].starred;
+    if (favoritesData[url].starred) {
+      showToast('Added to favorites ⭐', 'success');
+    } else {
+      showToast('Removed from favorites', 'info');
+      // Remove entirely if no note
+      if (!favoritesData[url].note) delete favoritesData[url];
+    }
+  }
+  persistAll();
+  updateSidebarBadges();
+  renderLinks();
+  if (currentSection === 'favorites') renderFavorites();
+}
+
+function favoriteSelectedLinks() {
+  if (selectedLinks.size === 0) { showToast('No links selected', 'warning'); return; }
+  selectedLinks.forEach(url => {
+    if (!favoritesData[url]) favoritesData[url] = { starred: true, note: '', date: new Date().toISOString() };
+    else favoritesData[url].starred = true;
+  });
+  persistAll();
+  updateSidebarBadges();
+  showToast(`Starred ${selectedLinks.size} links`, 'success');
+  renderLinks();
+  closeAllDropdowns();
+}
+
+function renderFavorites() {
+  const container = document.getElementById('favoritesList');
+  if (!container) return;
+  const favs = Object.entries(favoritesData).filter(([,v]) => v.starred);
+  if (favs.length === 0) {
+    container.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;color:var(--text-muted);">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin-bottom:16px;opacity:0.5;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <div style="font-size:14px;font-weight:500;">No favorites yet</div>
+      <div style="font-size:12px;margin-top:4px;">Star links using the ⭐ button in Results</div>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = favs.map(([url, data], i) => {
+    const domain = url.replace(/^https?:\/\//, '').split('/')[0];
+    const encodedUrl = encodeURIComponent(url);
+    const escapedUrl = url.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    const date = new Date(data.date);
+    const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `<div class="link-row favorited" style="animation:fadeInUp 0.3s ease forwards;animation-delay:${i*20}ms;opacity:0;">
+      <button class="star-btn starred" onclick="toggleFavorite('${encodedUrl}')" title="Remove from favorites">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </button>
+      <div style="flex:1;min-width:0;">
+        <div class="link-url" title="${escapedUrl}">${url}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:8px;">
+          <span>${domain}</span>
+          <span>•</span>
+          <span>Saved ${dateStr}</span>
+          ${data.note ? `<span style="color:var(--accent-light);">📝 ${data.note.substring(0,50)}</span>` : ''}
+        </div>
+      </div>
+      <button class="btn-icon" style="width:28px;height:28px;border-radius:8px;" onclick="openNoteModal('${encodedUrl}')" title="${data.note ? 'Edit note' : 'Add note'}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${data.note ? 'var(--accent)' : 'currentColor'}" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <button class="btn-icon" style="width:28px;height:28px;border-radius:8px;" onclick="copySingleLink('${encodedUrl}')" title="Copy link">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+      <button class="btn-icon" style="width:28px;height:28px;border-radius:8px;" onclick="window.open('${escapedUrl}','_blank')" title="Open link">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function clearAllFavorites() {
+  if (Object.keys(favoritesData).length === 0) { showToast('No favorites to clear', 'info'); return; }
+  favoritesData = {};
+  persistAll();
+  updateSidebarBadges();
+  renderFavorites();
+  showToast('All favorites cleared', 'success');
+}
+
+function exportFavorites() {
+  const favs = Object.entries(favoritesData).filter(([,v]) => v.starred);
+  if (favs.length === 0) { showToast('No favorites to export', 'warning'); return; }
+  const content = JSON.stringify(favs.map(([url, data]) => ({ url, ...data })), null, 2);
+  downloadFile(content, 'favorites.json', 'application/json');
+  showToast(`Exported ${favs.length} favorites`, 'success');
+}
+
+// ==================== NOTE MODAL ====================
+function openNoteModal(encodedUrl) {
+  const url = decodeURIComponent(encodedUrl);
+  currentNoteUrl = url;
+  document.getElementById('noteModalUrl').textContent = url;
+  const existing = favoritesData[url];
+  document.getElementById('noteModalText').value = existing ? existing.note || '' : '';
+  document.getElementById('noteModal').classList.add('open');
+  setTimeout(() => document.getElementById('noteModalText').focus(), 100);
+}
+
+function closeNoteModal() {
+  document.getElementById('noteModal').classList.remove('open');
+  currentNoteUrl = null;
+}
+
+function saveNote() {
+  if (!currentNoteUrl) return;
+  const note = document.getElementById('noteModalText').value.trim();
+  if (!favoritesData[currentNoteUrl]) {
+    favoritesData[currentNoteUrl] = { starred: false, note, date: new Date().toISOString() };
+  } else {
+    favoritesData[currentNoteUrl].note = note;
+  }
+  if (!note && !favoritesData[currentNoteUrl].starred) {
+    delete favoritesData[currentNoteUrl];
+  }
+  persistAll();
+  closeNoteModal();
+  showToast('Note saved', 'success');
+  if (currentSection === 'results') renderLinks();
+  if (currentSection === 'favorites') renderFavorites();
+}
+
 // ==================== SELECTION ====================
 function toggleLinkSelection(encodedUrl, event) {
+  if (event && event.target.closest('.btn-icon, .star-btn')) return;
   const url = decodeURIComponent(encodedUrl);
-  if (selectedLinks.has(url)) {
-    selectedLinks.delete(url);
-  } else {
-    selectedLinks.add(url);
-  }
+  if (selectedLinks.has(url)) selectedLinks.delete(url);
+  else selectedLinks.add(url);
   renderLinks();
 }
 
@@ -1711,44 +2247,29 @@ function updateSelectionBar() {
 
 // ==================== BULK ACTIONS ====================
 function copySelectedLinks() {
-  if (selectedLinks.size === 0) {
-    showToast('No links selected', 'warning');
-    return;
-  }
-  const text = [...selectedLinks].join('\n');
-  navigator.clipboard.writeText(text).then(() => {
-    showToast(`Copied ${selectedLinks.size} links to clipboard`, 'success');
-  }).catch(() => {
-    showToast('Failed to copy to clipboard', 'error');
-  });
+  if (selectedLinks.size === 0) { showToast('No links selected', 'warning'); return; }
+  navigator.clipboard.writeText([...selectedLinks].join('\n'))
+    .then(() => showToast(`Copied ${selectedLinks.size} links to clipboard`, 'success'))
+    .catch(() => showToast('Failed to copy to clipboard', 'error'));
   closeAllDropdowns();
 }
 
 function openSelectedLinks() {
-  if (selectedLinks.size === 0) {
-    showToast('No links selected', 'warning');
-    return;
-  }
-  if (selectedLinks.size > 10) {
-    showToast(`Opening ${selectedLinks.size} tabs. Browser may block some.`, 'warning', 4000);
-  }
+  if (selectedLinks.size === 0) { showToast('No links selected', 'warning'); return; }
+  if (selectedLinks.size > 10) showToast(`Opening ${selectedLinks.size} tabs. Browser may block some.`, 'warning', 4000);
   let count = 0;
-  selectedLinks.forEach(url => {
-    setTimeout(() => { window.open(url, '_blank'); count++; }, count * 100);
-  });
+  selectedLinks.forEach(url => { setTimeout(() => window.open(url, '_blank'), count++ * 100); });
   showToast(`Opening ${selectedLinks.size} links in new tabs`, 'info');
   closeAllDropdowns();
 }
 
 function deleteSelectedLinks() {
-  if (selectedLinks.size === 0) {
-    showToast('No links selected', 'warning');
-    return;
-  }
+  if (selectedLinks.size === 0) { showToast('No links selected', 'warning'); return; }
   const count = selectedLinks.size;
   extractedLinks = extractedLinks.filter(l => !selectedLinks.has(l.url));
   filteredLinks = filteredLinks.filter(l => !selectedLinks.has(l.url));
   selectedLinks.clear();
+  persistAll();
   renderLinks();
   animateStats();
   showToast(`Deleted ${count} links`, 'success');
@@ -1757,24 +2278,16 @@ function deleteSelectedLinks() {
 
 function copySingleLink(encodedUrl) {
   const url = decodeURIComponent(encodedUrl);
-  navigator.clipboard.writeText(url).then(() => {
-    showToast('Link copied', 'success');
-  }).catch(() => {
-    showToast('Failed to copy', 'error');
-  });
+  navigator.clipboard.writeText(url)
+    .then(() => showToast('Link copied', 'success'))
+    .catch(() => showToast('Failed to copy', 'error'));
 }
 
 function copyAllLinks() {
-  if (extractedLinks.length === 0) {
-    showToast('No links to copy', 'warning');
-    return;
-  }
-  const text = extractedLinks.map(l => l.url).join('\n');
-  navigator.clipboard.writeText(text).then(() => {
-    showToast(`Copied ${extractedLinks.length} links to clipboard`, 'success');
-  }).catch(() => {
-    showToast('Failed to copy', 'error');
-  });
+  if (extractedLinks.length === 0) { showToast('No links to copy', 'warning'); return; }
+  navigator.clipboard.writeText(extractedLinks.map(l => l.url).join('\n'))
+    .then(() => showToast(`Copied ${extractedLinks.length} links to clipboard`, 'success'))
+    .catch(() => showToast('Failed to copy', 'error'));
   closeAllDropdowns();
 }
 
@@ -1787,88 +2300,258 @@ function toggleFilter(chip, filter) {
 }
 
 function filterLinks() {
-  const query = document.getElementById('searchInput').value.toLowerCase().trim();
+  const query = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase().trim() : '';
 
   filteredLinks = extractedLinks.filter(link => {
-    // Type filter
-    if (activeFilter !== 'all' && link.type !== activeFilter) return false;
-    // Search filter
-    if (query && !link.url.toLowerCase().includes(query) && !link.domain.toLowerCase().includes(query) && !link.text.toLowerCase().includes(query)) return false;
+    if (activeFilter === 'favorites') {
+      const fav = favoritesData[link.url];
+      if (!fav || !fav.starred) return false;
+    } else if (activeFilter !== 'all' && link.type !== activeFilter) {
+      return false;
+    }
+    if (query) {
+      const fav = favoritesData[link.url];
+      const noteText = fav && fav.note ? fav.note.toLowerCase() : '';
+      if (!link.url.toLowerCase().includes(query) && !link.domain.toLowerCase().includes(query) && !link.text.toLowerCase().includes(query) && !noteText.includes(query)) return false;
+    }
     return true;
   });
 
-  // Sort
-  const sortVal = document.getElementById('sortSelect').value;
+  const sortVal = document.getElementById('sortSelect') ? document.getElementById('sortSelect').value : 'default';
   if (sortVal === 'alpha') filteredLinks.sort((a, b) => a.url.localeCompare(b.url));
   else if (sortVal === 'domain') filteredLinks.sort((a, b) => a.domain.localeCompare(b.domain));
   else if (sortVal === 'type') filteredLinks.sort((a, b) => a.type.localeCompare(b.type));
+  else if (sortVal === 'favorites') filteredLinks.sort((a, b) => {
+    const aFav = favoritesData[a.url] && favoritesData[a.url].starred ? 1 : 0;
+    const bFav = favoritesData[b.url] && favoritesData[b.url].starred ? 1 : 0;
+    return bFav - aFav;
+  });
 
   renderLinks();
 }
 
-function sortLinks() {
-  filterLinks();
-}
+function sortLinks() { filterLinks(); }
 
 // ==================== EXPORT ====================
-function exportLinks(format) {
-  if (extractedLinks.length === 0) {
-    showToast('No links to export', 'warning');
-    return;
-  }
-
-  let content, filename, mimeType;
-
-  switch (format) {
-    case 'txt':
-      content = extractedLinks.map(l => l.url).join('\n');
-      filename = 'links.txt';
-      mimeType = 'text/plain';
-      break;
-    case 'csv':
-      content = 'URL,Type,Domain,Text\n' + extractedLinks.map(l => `"${l.url}","${l.type}","${l.domain}","${l.text}"`).join('\n');
-      filename = 'links.csv';
-      mimeType = 'text/csv';
-      break;
-    case 'json':
-      content = JSON.stringify(extractedLinks.map(l => ({ url: l.url, type: l.type, domain: l.domain, text: l.text })), null, 2);
-      filename = 'links.json';
-      mimeType = 'application/json';
-      break;
-    case 'html':
-      const byType = {};
-      extractedLinks.forEach(l => {
-        if (!byType[l.type]) byType[l.type] = [];
-        byType[l.type].push(l);
-      });
-      content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Extracted Links</title><style>body{font-family:Inter,sans-serif;max-width:900px;margin:40px auto;padding:0 20px;background:#0a0a0f;color:#f0f0f5;}h1{font-size:24px;margin-bottom:24px;}h2{font-size:16px;margin:24px 0 12px;color:#8888a0;text-transform:uppercase;letter-spacing:0.05em;font-size:12px;}a{color:#818cf8;text-decoration:none;display:block;padding:6px 0;font-size:13px;}a:hover{color:#c7d2fe;}span.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;margin-right:8px;}</style></head><body><h1>Extracted Links</h1>`;
-      Object.entries(byType).forEach(([type, links]) => {
-        content += `<h2>${getBadgeLabel(type)} (${links.length})</h2>`;
-        links.forEach(l => { content += `<a href="${l.url}" target="_blank">${l.url}</a>`; });
-      });
-      content += '</body></html>';
-      filename = 'links.html';
-      mimeType = 'text/html';
-      break;
-  }
-
+function downloadFile(content, filename, mimeType) {
   const blob = new Blob([content], { type: mimeType });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = filename;
   a.click();
   URL.revokeObjectURL(a.href);
+}
 
+function exportLinks(format) {
+  if (extractedLinks.length === 0) { showToast('No links to export', 'warning'); return; }
+  let content, filename, mimeType;
+
+  switch (format) {
+    case 'txt':
+      content = extractedLinks.map(l => l.url).join('\n');
+      filename = 'links.txt'; mimeType = 'text/plain';
+      break;
+    case 'csv':
+      content = 'URL,Type,Domain,Text,Favorite,Note\n' + extractedLinks.map(l => {
+        const fav = favoritesData[l.url];
+        return `"${l.url}","${l.type}","${l.domain}","${l.text}","${fav&&fav.starred?'Yes':'No'}","${fav&&fav.note?fav.note.replace(/"/g,"'"):''}"`;
+      }).join('\n');
+      filename = 'links.csv'; mimeType = 'text/csv';
+      break;
+    case 'json':
+      content = JSON.stringify(extractedLinks.map(l => {
+        const fav = favoritesData[l.url];
+        return { url: l.url, type: l.type, domain: l.domain, text: l.text, favorite: !!(fav&&fav.starred), note: fav&&fav.note||'' };
+      }), null, 2);
+      filename = 'links.json'; mimeType = 'application/json';
+      break;
+    case 'html':
+      const byType = {};
+      extractedLinks.forEach(l => { if (!byType[l.type]) byType[l.type] = []; byType[l.type].push(l); });
+      content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Extracted Links</title><style>body{font-family:Inter,sans-serif;max-width:900px;margin:40px auto;padding:0 20px;background:#0a0a0f;color:#f0f0f5;}h1{font-size:24px;margin-bottom:24px;}h2{font-size:12px;margin:24px 0 12px;color:#8888a0;text-transform:uppercase;letter-spacing:0.05em;}a{color:#818cf8;text-decoration:none;display:block;padding:6px 0;font-size:13px;}a:hover{color:#c7d2fe;}</style></head><body><h1>Extracted Links</h1>`;
+      Object.entries(byType).forEach(([type, links]) => {
+        content += `<h2>${getBadgeLabel(type)} (${links.length})</h2>`;
+        links.forEach(l => { content += `<a href="${l.url}" target="_blank">${l.url}</a>`; });
+      });
+      content += '</body></html>';
+      filename = 'links.html'; mimeType = 'text/html';
+      break;
+  }
+  downloadFile(content, filename, mimeType);
   showToast(`Exported ${extractedLinks.length} links as ${format.toUpperCase()}`, 'success');
   closeAllDropdowns();
 }
 
-function openExportModal() {
-  document.getElementById('exportModal').classList.add('open');
+function openExportModal() { document.getElementById('exportModal').classList.add('open'); }
+function closeExportModal() { document.getElementById('exportModal').classList.remove('open'); }
+
+// ==================== EXPORT ALL HISTORY ====================
+function exportAllHistory() {
+  if (historyData.length === 0) { showToast('No sessions to export', 'warning'); return; }
+  const backup = {
+    version: '3.0.0',
+    exportDate: new Date().toISOString(),
+    sessions: historyData,
+    favorites: favoritesData,
+    cumulativeStats: { ...cumulativeStats, sites: [...cumulativeStats.sites] }
+  };
+  downloadFile(JSON.stringify(backup, null, 2), `links_backup_${new Date().toISOString().split('T')[0]}.json`, 'application/json');
+  showToast(`Exported ${historyData.length} sessions`, 'success');
 }
 
-function closeExportModal() {
-  document.getElementById('exportModal').classList.remove('open');
+// ==================== IMPORT ====================
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.add('drag-over');
+}
+function handleDragLeave(e) {
+  document.getElementById('dropZone').classList.remove('drag-over');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) processImportFile(file);
+}
+function handleFileImport(e) {
+  const file = e.target.files[0];
+  if (file) processImportFile(file);
+}
+
+function processImportFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const content = e.target.result;
+    const ext = file.name.split('.').pop().toLowerCase();
+
+    if (ext === 'json') {
+      try {
+        const data = JSON.parse(content);
+        // Check if it's a full backup
+        if (data.sessions && Array.isArray(data.sessions)) {
+          showImportPreview(`Full backup detected: ${data.sessions.length} sessions`, data.sessions.length, () => {
+            // Merge sessions
+            const existingIds = new Set(historyData.map(s => s.id));
+            const newSessions = data.sessions.filter(s => !existingIds.has(s.id));
+            historyData = [...newSessions, ...historyData].slice(0, parseInt(settings.maxSessions) || 20);
+            if (data.favorites) {
+              favoritesData = { ...data.favorites, ...favoritesData };
+            }
+            if (data.cumulativeStats) {
+              const importedSites = new Set(data.cumulativeStats.sites || []);
+              cumulativeStats.sites = new Set([...cumulativeStats.sites, ...importedSites]);
+              cumulativeStats.totalLinks = Math.max(cumulativeStats.totalLinks, data.cumulativeStats.totalLinks || 0);
+              cumulativeStats.sessions = historyData.length;
+            }
+            persistAll();
+            updateSidebarBadges();
+            showToast(`Imported ${newSessions.length} new sessions`, 'success');
+          });
+        } else if (Array.isArray(data)) {
+          // Array of link objects
+          const links = data.filter(l => l.url);
+          showImportPreview(`Link list: ${links.length} URLs`, links.length, () => {
+            importLinksAsSession(links, file.name);
+          });
+        }
+      } catch (err) {
+        showToast('Invalid JSON file', 'error');
+      }
+    } else if (ext === 'csv') {
+      const lines = content.split('\n').filter(l => l.trim());
+      const headers = lines[0].toLowerCase();
+      let links;
+      if (headers.includes('url')) {
+        links = lines.slice(1).map(line => {
+          const cols = line.match(/(".*?"|[^,]+)(?=,|$)/g) || [];
+          const url = (cols[0] || '').replace(/"/g, '').trim();
+          const type = (cols[1] || 'external').replace(/"/g, '').trim();
+          const domain = url.replace(/^https?:\/\//, '').split('/')[0];
+          return { url, type, domain, text: (cols[3]||'').replace(/"/g,'').trim() || 'Imported' };
+        }).filter(l => l.url.startsWith('http'));
+      } else {
+        links = lines.map(l => l.trim()).filter(l => l.startsWith('http')).map(url => ({
+          url, type: 'external', domain: url.replace(/^https?:\/\//, '').split('/')[0], text: 'Imported'
+        }));
+      }
+      showImportPreview(`CSV: ${links.length} URLs`, links.length, () => {
+        importLinksAsSession(links, file.name);
+      });
+    } else if (ext === 'txt') {
+      const links = content.split('\n').map(l => l.trim()).filter(l => l.startsWith('http')).map(url => ({
+        url, type: 'external', domain: url.replace(/^https?:\/\//, '').split('/')[0], text: 'Imported'
+      }));
+      showImportPreview(`TXT: ${links.length} URLs`, links.length, () => {
+        importLinksAsSession(links, file.name);
+      });
+    } else {
+      showToast('Unsupported file format', 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function showImportPreview(description, count, onConfirm) {
+  const preview = document.getElementById('importPreview');
+  const content = document.getElementById('importPreviewContent');
+  preview.style.display = 'block';
+  content.innerHTML = `
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:13px;font-weight:500;">${description}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${count} items ready to import</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-left:auto;">
+        <button class="btn-primary" onclick="(${onConfirm.toString()})();document.getElementById('importPreview').style.display='none';">
+          Confirm Import
+        </button>
+        <button class="btn-ghost" onclick="document.getElementById('importPreview').style.display='none';">Cancel</button>
+      </div>
+    </div>`;
+}
+
+function importLinksAsSession(links, sourceName) {
+  if (links.length === 0) { showToast('No valid URLs found', 'warning'); return; }
+  extractedLinks = links;
+  filteredLinks = [...links];
+  selectedLinks.clear();
+
+  const session = {
+    id: Date.now(),
+    url: sourceName,
+    title: `Imported: ${sourceName}`,
+    date: new Date().toISOString(),
+    totalLinks: links.length,
+    links,
+    pinned: false
+  };
+  historyData.unshift(session);
+  cumulativeStats.totalLinks += links.length;
+  cumulativeStats.sessions += 1;
+
+  persistAll();
+  updateSidebarBadges();
+  animateStats();
+  renderLinks();
+  updateDashboard();
+  updateRecentSessions();
+  showToast(`Imported ${links.length} links`, 'success');
+  switchSection('results');
+}
+
+function importPastedUrls() {
+  const text = document.getElementById('pasteUrls').value.trim();
+  if (!text) { showToast('Nothing to import', 'warning'); return; }
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
+  if (lines.length === 0) { showToast('No valid HTTP URLs found. URLs must start with http:// or https://', 'error'); return; }
+  const links = lines.map(url => ({
+    url,
+    type: 'external',
+    domain: url.replace(/^https?:\/\//, '').split('/')[0],
+    text: 'Pasted URL'
+  }));
+  importLinksAsSession(links, 'Pasted URLs');
+  document.getElementById('pasteUrls').value = '';
 }
 
 // ==================== DROPDOWNS ====================
@@ -1878,172 +2561,163 @@ function toggleDropdown(id) {
   closeAllDropdowns();
   if (!isOpen) dropdown.classList.add('open');
 }
-
 function closeAllDropdowns() {
   document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
 }
-
 document.addEventListener('click', (e) => {
-  if (!e.target.closest('.dropdown') && !e.target.closest('[onclick*="toggleDropdown"]')) {
-    closeAllDropdowns();
-  }
+  if (!e.target.closest('.dropdown') && !e.target.closest('[onclick*="toggleDropdown"]')) closeAllDropdowns();
 });
 
 // ==================== CHARTS ====================
 function updateDashboard() {
   if (extractedLinks.length === 0) return;
-
   const types = {};
   extractedLinks.forEach(l => { types[l.type] = (types[l.type] || 0) + 1; });
-
   if (chartInstances.dash) chartInstances.dash.destroy();
-
-  const ctx = document.getElementById('dashChart').getContext('2d');
+  const ctx = document.getElementById('dashChart');
+  if (!ctx) return;
   const colors = ['#6366f1','#10b981','#ec4899','#f97316','#ef4444','#f59e0b','#6b7280'];
-  chartInstances.dash = new Chart(ctx, {
+  chartInstances.dash = new Chart(ctx.getContext('2d'), {
     type: 'doughnut',
     data: {
       labels: Object.keys(types).map(t => getBadgeLabel(t)),
-      datasets: [{
-        data: Object.values(types),
-        backgroundColor: colors.slice(0, Object.keys(types).length),
-        borderWidth: 0,
-        hoverOffset: 8
-      }]
+      datasets: [{ data: Object.values(types), backgroundColor: colors.slice(0, Object.keys(types).length), borderWidth: 0, hoverOffset: 8 }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '65%',
-      plugins: {
-        legend: {
-          position: 'right',
-          labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim(), font: { size: 11, family: 'Inter' }, padding: 12, usePointStyle: true, pointStyleWidth: 8 }
-        }
-      }
+      responsive: true, maintainAspectRatio: false, cutout: '65%',
+      plugins: { legend: { position: 'right', labels: { color: getCSSVar('--text-secondary'), font: { size: 11, family: 'Inter' }, padding: 12, usePointStyle: true, pointStyleWidth: 8 } } }
     }
   });
 }
 
 function updateCharts() {
   if (extractedLinks.length === 0) return;
-
   const types = {};
   extractedLinks.forEach(l => { types[l.type] = (types[l.type] || 0) + 1; });
 
-  // Type distribution
   if (chartInstances.type) chartInstances.type.destroy();
-  const typeCtx = document.getElementById('typeChart').getContext('2d');
-  const typeColors = { external:'#6366f1', internal:'#10b981', image:'#ec4899', video:'#f97316', pdf:'#ef4444', file:'#f59e0b' };
-  chartInstances.type = new Chart(typeCtx, {
-    type: 'bar',
-    data: {
-      labels: Object.keys(types).map(t => getBadgeLabel(t)),
-      datasets: [{
-        data: Object.values(types),
-        backgroundColor: Object.keys(types).map(t => typeColors[t] || '#6b7280'),
-        borderRadius: 8,
-        borderSkipped: false,
-        barThickness: 32
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: getCSSVar('--text-muted'), font: { size: 11, family: 'Inter' } } },
-        y: { grid: { color: getCSSVar('--border') }, ticks: { color: getCSSVar('--text-muted'), font: { size: 11, family: 'Inter' } } }
+  const typeCtx = document.getElementById('typeChart');
+  if (typeCtx) {
+    const typeColors = { external:'#6366f1', internal:'#10b981', image:'#ec4899', video:'#f97316', pdf:'#ef4444', file:'#f59e0b' };
+    chartInstances.type = new Chart(typeCtx.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: Object.keys(types).map(t => getBadgeLabel(t)),
+        datasets: [{ data: Object.values(types), backgroundColor: Object.keys(types).map(t => typeColors[t]||'#6b7280'), borderRadius: 8, borderSkipped: false, barThickness: 32 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { x: { grid: { display: false }, ticks: { color: getCSSVar('--text-muted'), font: { size: 11, family: 'Inter' } } }, y: { grid: { color: getCSSVar('--border') }, ticks: { color: getCSSVar('--text-muted'), font: { size: 11, family: 'Inter' } } } }
       }
-    }
-  });
+    });
+  }
 
-  // Internal vs External
   if (chartInstances.intExt) chartInstances.intExt.destroy();
-  const intExtCtx = document.getElementById('intExtChart').getContext('2d');
-  const internalCount = (types['internal'] || 0);
-  const externalCount = (types['external'] || 0);
-  chartInstances.intExt = new Chart(intExtCtx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Internal', 'External'],
-      datasets: [{ data: [internalCount, externalCount], backgroundColor: ['#10b981', '#6366f1'], borderWidth: 0, hoverOffset: 8 }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false, cutout: '70%',
-      plugins: { legend: { position: 'bottom', labels: { color: getCSSVar('--text-secondary'), font: { size: 12, family: 'Inter' }, padding: 16, usePointStyle: true, pointStyleWidth: 8 } } }
-    }
-  });
+  const intExtCtx = document.getElementById('intExtChart');
+  if (intExtCtx) {
+    chartInstances.intExt = new Chart(intExtCtx.getContext('2d'), {
+      type: 'doughnut',
+      data: { labels: ['Internal', 'External'], datasets: [{ data: [types['internal']||0, types['external']||0], backgroundColor: ['#10b981','#6366f1'], borderWidth: 0, hoverOffset: 8 }] },
+      options: { responsive: true, maintainAspectRatio: false, cutout: '70%',
+        plugins: { legend: { position: 'bottom', labels: { color: getCSSVar('--text-secondary'), font: { size: 12, family: 'Inter' }, padding: 16, usePointStyle: true, pointStyleWidth: 8 } } }
+      }
+    });
+  }
 
-  // Top domains
   const domainCounts = {};
-  extractedLinks.forEach(l => { domainCounts[l.domain] = (domainCounts[l.domain] || 0) + 1; });
-  const sortedDomains = Object.entries(domainCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  extractedLinks.forEach(l => { domainCounts[l.domain] = (domainCounts[l.domain]||0)+1; });
+  const sortedDomains = Object.entries(domainCounts).sort((a,b) => b[1]-a[1]).slice(0,10);
 
   if (chartInstances.domains) chartInstances.domains.destroy();
-  const domCtx = document.getElementById('domainsChart').getContext('2d');
-  chartInstances.domains = new Chart(domCtx, {
-    type: 'bar',
-    data: {
-      labels: sortedDomains.map(d => d[0]),
-      datasets: [{
-        data: sortedDomains.map(d => d[1]),
-        backgroundColor: 'rgba(99,102,241,0.6)',
-        hoverBackgroundColor: 'rgba(99,102,241,0.8)',
-        borderRadius: 6,
-        borderSkipped: false,
-        barThickness: 24
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: getCSSVar('--border') }, ticks: { color: getCSSVar('--text-muted'), font: { size: 11, family: 'Inter' } } },
-        y: { grid: { display: false }, ticks: { color: getCSSVar('--text-secondary'), font: { size: 11, family: 'JetBrains Mono' } } }
+  const domCtx = document.getElementById('domainsChart');
+  if (domCtx) {
+    chartInstances.domains = new Chart(domCtx.getContext('2d'), {
+      type: 'bar',
+      data: { labels: sortedDomains.map(d => d[0]), datasets: [{ data: sortedDomains.map(d => d[1]), backgroundColor: 'rgba(99,102,241,0.6)', hoverBackgroundColor: 'rgba(99,102,241,0.8)', borderRadius: 6, borderSkipped: false, barThickness: 24 }] },
+      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { x: { grid: { color: getCSSVar('--border') }, ticks: { color: getCSSVar('--text-muted'), font: { size: 11, family: 'Inter' } } }, y: { grid: { display: false }, ticks: { color: getCSSVar('--text-secondary'), font: { size: 11, family: 'JetBrains Mono' } } } }
       }
-    }
-  });
+    });
+  }
+
+  // Sessions over time chart
+  if (chartInstances.sessions) chartInstances.sessions.destroy();
+  const sessCtx = document.getElementById('sessionsChart');
+  if (sessCtx && historyData.length > 0) {
+    const last10 = [...historyData].reverse().slice(-10);
+    chartInstances.sessions = new Chart(sessCtx.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: last10.map(s => { try { return new URL(s.url).hostname.substring(0,15); } catch(e) { return s.url.substring(0,15); } }),
+        datasets: [{ label: 'Links per session', data: last10.map(s => s.totalLinks), fill: true, backgroundColor: 'rgba(99,102,241,0.08)', borderColor: '#6366f1', tension: 0.4, pointBackgroundColor: '#6366f1', pointRadius: 4 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { x: { grid: { display: false }, ticks: { color: getCSSVar('--text-muted'), font: { size: 10, family: 'Inter' } } }, y: { grid: { color: getCSSVar('--border') }, ticks: { color: getCSSVar('--text-muted'), font: { size: 11 } } } }
+      }
+    });
+  }
 
   // Domain breakdown
   const breakdownEl = document.getElementById('domainBreakdown');
-  const maxCount = sortedDomains[0] ? sortedDomains[0][1] : 1;
-  breakdownEl.innerHTML = sortedDomains.map(([domain, count]) => `
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-      <span class="mono" style="font-size:12px;min-width:200px;color:var(--text-secondary);">${domain}</span>
-      <div class="domain-bar"><div class="domain-bar-fill" style="width:${(count/maxCount)*100}%"></div></div>
-      <span style="font-size:12px;font-weight:600;min-width:30px;text-align:right;">${count}</span>
-    </div>
-  `).join('');
+  if (breakdownEl) {
+    const maxCount = sortedDomains[0] ? sortedDomains[0][1] : 1;
+    breakdownEl.innerHTML = sortedDomains.map(([domain, count]) => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
+        <span class="mono" style="font-size:12px;min-width:200px;color:var(--text-secondary);">${domain}</span>
+        <div class="domain-bar"><div class="domain-bar-fill" style="width:${(count/maxCount)*100}%"></div></div>
+        <span style="font-size:12px;font-weight:600;min-width:30px;text-align:right;">${count}</span>
+      </div>`).join('');
+  }
 }
 
 function getCSSVar(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || 'rgba(255,255,255,0.1)';
 }
 
+// ==================== CUMULATIVE DISPLAY ====================
+function updateCumulativeDisplay() {
+  const el1 = document.getElementById('cumTotal');
+  const el2 = document.getElementById('cumSessions');
+  const el3 = document.getElementById('cumFavorites');
+  const el4 = document.getElementById('cumSites');
+  if (el1) el1.textContent = cumulativeStats.totalLinks.toLocaleString();
+  if (el2) el2.textContent = cumulativeStats.sessions;
+  if (el3) el3.textContent = Object.values(favoritesData).filter(f => f.starred).length;
+  if (el4) el4.textContent = cumulativeStats.sites.size;
+}
+
 // ==================== HISTORY ====================
 function renderHistory() {
   const container = document.getElementById('historyList');
+  if (!container) return;
+  const searchQ = document.getElementById('historySearch') ? document.getElementById('historySearch').value.toLowerCase() : '';
+  let filtered = historyData;
+  if (searchQ) filtered = historyData.filter(s => s.url.toLowerCase().includes(searchQ) || s.title.toLowerCase().includes(searchQ));
 
-  if (historyData.length === 0) {
+  if (filtered.length === 0) {
     container.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin:0 auto 16px;display:block;opacity:0.5;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      <div style="font-size:14px;font-weight:500;">No history yet</div>
-      <div style="font-size:12px;margin-top:4px;">Extract links to create sessions</div>
+      <div style="font-size:14px;font-weight:500;">${searchQ ? 'No matching sessions' : 'No history yet'}</div>
+      <div style="font-size:12px;margin-top:4px;">${searchQ ? 'Try a different search' : 'Extract links to create sessions'}</div>
     </div>`;
     return;
   }
 
-  container.innerHTML = historyData.map((session, i) => {
+  // Pin first
+  const sorted = [...filtered].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+
+  container.innerHTML = sorted.map((session, i) => {
     const date = new Date(session.date);
     const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    return `<div class="history-row" style="animation:fadeInUp 0.4s ease forwards;animation-delay:${i * 50}ms;opacity:0;">
+    return `<div class="history-row ${session.pinned ? 'pinned' : ''}" style="animation:fadeInUp 0.4s ease forwards;animation-delay:${i*50}ms;opacity:0;" id="history-row-${session.id}">
       <div style="width:42px;height:42px;border-radius:12px;background:rgba(99,102,241,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </div>
       <div style="flex:1;min-width:0;">
-        <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${session.title}</div>
+        <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px;">
+          ${session.pinned ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)" stroke="var(--accent)" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>' : ''}
+          <span id="session-title-${session.id}">${session.title}</span>
+        </div>
         <div class="mono" style="font-size:11px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${session.url}</div>
       </div>
       <div style="text-align:right;flex-shrink:0;">
@@ -2052,6 +2726,15 @@ function renderHistory() {
       </div>
       <span class="badge badge-external">${session.totalLinks} links</span>
       <div style="display:flex;gap:4px;flex-shrink:0;">
+        <button class="btn-icon" style="width:30px;height:30px;border-radius:8px;" onclick="pinSession(${session.id})" title="${session.pinned ? 'Unpin' : 'Pin session'}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="${session.pinned ? 'var(--accent)' : 'none'}" stroke="${session.pinned ? 'var(--accent)' : 'currentColor'}" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        </button>
+        <button class="btn-icon" style="width:30px;height:30px;border-radius:8px;" onclick="renameSession(${session.id})" title="Rename session">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="btn-icon" style="width:30px;height:30px;border-radius:8px;" onclick="exportSession(${session.id})" title="Export session">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
         <button class="btn-icon" style="width:30px;height:30px;border-radius:8px;" onclick="reloadSession(${session.id})" title="Reload session">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
         </button>
@@ -2063,46 +2746,90 @@ function renderHistory() {
   }).join('');
 }
 
+function pinSession(id) {
+  const s = historyData.find(s => s.id === id);
+  if (!s) return;
+  s.pinned = !s.pinned;
+  persistAll();
+  renderHistory();
+  showToast(s.pinned ? 'Session pinned' : 'Session unpinned', 'info');
+}
+
+function renameSession(id) {
+  const s = historyData.find(s => s.id === id);
+  if (!s) return;
+  const titleEl = document.getElementById(`session-title-${id}`);
+  if (!titleEl) return;
+  const currentTitle = s.title;
+  titleEl.innerHTML = `<input class="rename-input" id="rename-input-${id}" value="${currentTitle.replace(/"/g,'&quot;')}" onblur="confirmRename(${id})" onkeydown="if(event.key==='Enter')this.blur();if(event.key==='Escape'){this.value='${currentTitle.replace(/'/g,"\\'")}';this.blur();}">`;
+  const input = document.getElementById(`rename-input-${id}`);
+  if (input) { input.focus(); input.select(); }
+}
+
+function confirmRename(id) {
+  const s = historyData.find(s => s.id === id);
+  if (!s) return;
+  const input = document.getElementById(`rename-input-${id}`);
+  if (!input) return;
+  const newTitle = input.value.trim() || s.title;
+  s.title = newTitle;
+  persistAll();
+  renderHistory();
+  showToast('Session renamed', 'success');
+}
+
+function exportSession(id) {
+  const s = historyData.find(s => s.id === id);
+  if (!s) return;
+  const content = JSON.stringify({ session: s, exportDate: new Date().toISOString() }, null, 2);
+  let name;
+  try { name = new URL(s.url).hostname; } catch(e) { name = 'session'; }
+  downloadFile(content, `session_${name}_${new Date(s.date).toISOString().split('T')[0]}.json`, 'application/json');
+  showToast('Session exported', 'success');
+}
+
 function reloadSession(id) {
   const session = historyData.find(s => s.id === id);
   if (!session) return;
-  extractedLinks = [...session.links];
+  extractedLinks = [...(session.links || [])];
   filteredLinks = [...extractedLinks];
   selectedLinks.clear();
   animateStats();
   updateDashboard();
   renderLinks();
-  showToast('Session reloaded', 'success');
+  persistAll();
+  showToast(`Session loaded: ${session.totalLinks} links`, 'success');
   switchSection('results');
 }
 
 function deleteSession(id) {
   historyData = historyData.filter(s => s.id !== id);
+  persistAll();
+  updateSidebarBadges();
   renderHistory();
   updateRecentSessions();
   showToast('Session deleted', 'success');
 }
 
 function clearAllHistory() {
-  if (historyData.length === 0) {
-    showToast('No history to clear', 'info');
-    return;
-  }
+  if (historyData.length === 0) { showToast('No history to clear', 'info'); return; }
+  const count = historyData.length;
   historyData = [];
+  persistAll();
+  updateSidebarBadges();
   renderHistory();
   updateRecentSessions();
-  showToast('All history cleared', 'success');
+  showToast(`Cleared ${count} sessions`, 'success');
 }
 
 function updateRecentSessions() {
   const container = document.getElementById('recentSessions');
+  if (!container) return;
   const recent = historyData.slice(0, 3);
-
   if (recent.length === 0) {
-    container.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;">No recent sessions</div>`;
+    container.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;">No recent sessions — extract some links to get started!</div>`;
     return;
   }
-
   container.innerHTML = recent.map(s => {
     const date = new Date(s.date);
     const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -2120,23 +2847,43 @@ function updateRecentSessions() {
   }).join('');
 }
 
+// ==================== SIDEBAR BADGES ====================
+function updateSidebarBadges() {
+  const historyCount = document.getElementById('historyCount');
+  const favCount = document.getElementById('favCount');
+  if (historyCount) {
+    if (historyData.length > 0) {
+      historyCount.textContent = historyData.length;
+      historyCount.style.display = 'inline';
+    } else {
+      historyCount.style.display = 'none';
+    }
+  }
+  if (favCount) {
+    const favLen = Object.values(favoritesData).filter(f => f.starred).length;
+    if (favLen > 0) {
+      favCount.textContent = favLen;
+      favCount.style.display = 'inline';
+    } else {
+      favCount.style.display = 'none';
+    }
+  }
+}
+
 // ==================== DARK MODE ====================
 function toggleDarkMode() {
   const html = document.documentElement;
   const toggle = document.getElementById('darkModeToggle');
   const isDark = html.getAttribute('data-theme') === 'dark';
-
   if (isDark) {
     html.setAttribute('data-theme', 'light');
     toggle.classList.remove('active');
-    localStorage.setItem('theme', 'light');
+    localStorage.setItem(STORAGE_KEYS.THEME, 'light');
   } else {
     html.setAttribute('data-theme', 'dark');
     toggle.classList.add('active');
-    localStorage.setItem('theme', 'dark');
+    localStorage.setItem(STORAGE_KEYS.THEME, 'dark');
   }
-
-  // Update charts colors
   if (currentSection === 'analytics') setTimeout(updateCharts, 200);
   if (currentSection === 'dashboard') setTimeout(updateDashboard, 200);
 }
@@ -2154,14 +2901,36 @@ function toggleAutoTheme() {
   }
 }
 
-// ==================== SETTINGS INFO ====================
-function updateSettingsInfo() {
-  const storageSize = new Blob([JSON.stringify(historyData)]).size;
-  document.getElementById('storageUsed').textContent = storageSize > 1024 ? (storageSize / 1024).toFixed(1) + ' KB' : storageSize + ' B';
-  document.getElementById('sessionsCount').textContent = historyData.length;
+// ==================== SETTINGS ====================
+function toggleAutoSave(el) {
+  el.classList.toggle('active');
+  settings.autoSave = el.classList.contains('active');
+  saveSettings();
+  showToast(settings.autoSave ? 'Auto-save enabled' : 'Auto-save disabled', 'info');
 }
 
-// ==================== MOBILE RESPONSIVE ====================
+function saveSettings() {
+  const fmt = document.getElementById('defaultExportFormat');
+  const maxS = document.getElementById('maxSessions');
+  if (fmt) settings.defaultFormat = fmt.value;
+  if (maxS) settings.maxSessions = parseInt(maxS.value);
+  saveToStorage(STORAGE_KEYS.SETTINGS, settings);
+}
+
+function updateSettingsInfo() {
+  const storageSize = new Blob([JSON.stringify({ historyData, favoritesData, extractedLinks })]).size;
+  const kb = (storageSize / 1024).toFixed(1);
+  const el = document.getElementById('storageUsed');
+  if (el) el.textContent = kb + ' KB';
+  const el2 = document.getElementById('sessionsCount');
+  if (el2) el2.textContent = historyData.length;
+  const el3 = document.getElementById('favoritesCount');
+  if (el3) el3.textContent = Object.keys(favoritesData).length;
+  const el4 = document.getElementById('totalExtracted');
+  if (el4) el4.textContent = cumulativeStats.totalLinks;
+}
+
+// ==================== MOBILE ====================
 function checkMobile() {
   const btn = document.getElementById('mobileMenuBtn');
   if (window.innerWidth <= 768) {
@@ -2171,35 +2940,57 @@ function checkMobile() {
     document.getElementById('sidebar').classList.remove('open');
   }
 }
-
 window.addEventListener('resize', checkMobile);
 
 // ==================== INIT ====================
 function init() {
   checkMobile();
 
+  // Load all persisted data
+  loadAll();
+
   // Load theme
-  const savedTheme = localStorage.getItem('theme');
+  const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
   if (savedTheme) {
     document.documentElement.setAttribute('data-theme', savedTheme);
-    document.getElementById('darkModeToggle').classList.toggle('active', savedTheme === 'dark');
+    const toggle = document.getElementById('darkModeToggle');
+    if (toggle) toggle.classList.toggle('active', savedTheme === 'dark');
   }
 
-  // Render empty states
+  // Apply settings
+  const autoSaveToggle = document.getElementById('autoSaveToggle');
+  if (autoSaveToggle) autoSaveToggle.classList.toggle('active', settings.autoSave !== false);
+
+  // Init UI
+  updateSidebarBadges();
+  updateCumulativeDisplay();
   updateRecentSessions();
   renderHistory();
+  updateStorageDisplay();
 
-  // Close modal on overlay click
-  document.getElementById('exportModal').addEventListener('click', (e) => {
-    if (e.target === e.currentTarget) closeExportModal();
-  });
+  // Show restored data indicator
+  if (extractedLinks.length > 0) {
+    animateStats();
+    updateDashboard();
+    filterLinks();
+    showToast(`Restored ${extractedLinks.length} links from last session`, 'info', 4000);
+  }
+
+  // Close modals on overlay click
+  document.getElementById('exportModal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeExportModal(); });
+  document.getElementById('noteModal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeNoteModal(); });
 
   // Debounced search
   let searchTimeout;
-  document.getElementById('searchInput').addEventListener('input', () => {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(filterLinks, 150);
-  });
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(filterLinks, 150);
+    });
+  }
+
+  console.log('[Links Extractor PRO v3.0.0] Initialized with localStorage persistence');
 }
 
 init();
