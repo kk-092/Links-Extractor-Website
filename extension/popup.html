@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Links Extractor PRO</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<div class="app-shell">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
+      </div>
+      <div>
+        <div class="sidebar-logo-text">Links Extractor</div>
+        <div class="sidebar-logo-sub">PRO v3.0.0</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section-label">Main</div>
+
+    <button class="sidebar-link active" data-section="dashboard">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </button>
+
+    <button class="sidebar-link" data-section="extractor">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Extract
+    </button>
+
+    <button class="sidebar-link" data-section="results">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Results
+    </button>
+
+    <button class="sidebar-link" data-section="favorites">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Favorites
+      <span class="sidebar-badge" id="favBadge" style="display:none">0</span>
+    </button>
+
+    <button class="sidebar-link" data-section="analytics">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Analytics
+    </button>
+
+    <div class="sidebar-section-label" style="margin-top:8px">Tools</div>
+
+    <button class="sidebar-link" data-section="history">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      History
+      <span class="sidebar-badge" id="histBadge" style="display:none">0</span>
+    </button>
+
+    <button class="sidebar-link" data-section="import">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Import
+    </button>
+
+    <button class="sidebar-link" data-section="settings">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </button>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-storage">
+      <div class="sidebar-storage-label" id="storageSideLabel">0 KB used</div>
+      <div class="storage-bar"><div class="storage-bar-fill" id="storageSideBar" style="width:0%"></div></div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN PANEL ===== -->
+  <main class="main-panel">
+
+    <!-- ===== DASHBOARD ===== -->
+    <section class="section active" id="sec-dashboard">
+      <div class="page-header-row mb-12">
+        <div>
+          <h1>Dashboard</h1>
+          <p>Extract, manage &amp; export links from the active tab</p>
+        </div>
+        <div class="row gap-6">
+          <button class="btn btn-ghost" id="btnGoHistory" style="font-size:11.5px;padding:6px 12px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            History
+          </button>
+          <button class="btn btn-primary" id="btnDashExtract" style="font-size:11.5px;padding:6px 14px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Extract Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Cumulative stats banner -->
+      <div class="cum-banner mb-12">
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="cum-stat"><span class="cum-stat-label">All-Time Links</span><span class="cum-stat-val" id="totalExtracted">0</span></div>
+        <div class="cum-stat"><span class="cum-stat-label">Sessions</span><span class="cum-stat-val" id="totalSessions">0</span></div>
+        <div class="cum-stat"><span class="cum-stat-label">Favorites</span><span class="cum-stat-val" id="totalFavorites" style="color:#fbbf24">0</span></div>
+        <span class="cum-badge">Persisted</span>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="stats-grid mb-12">
+        <div class="stat-card">
+          <div class="stat-label">Links <div class="stat-icon" style="background:rgba(99,102,241,0.12)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div></div>
+          <div class="stat-value" id="dashTotal">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Internal <div class="stat-icon" style="background:rgba(16,185,129,0.12)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+          <div class="stat-value" id="dashInternal">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">External <div class="stat-icon" style="background:rgba(245,158,11,0.12)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div></div>
+          <div class="stat-value" id="dashExternal">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Images <div class="stat-icon" style="background:rgba(236,72,153,0.12)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div></div>
+          <div class="stat-value" id="dashImages">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Videos <div class="stat-icon" style="background:rgba(249,115,22,0.12)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div></div>
+          <div class="stat-value" id="dashVideos">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Files <div class="stat-icon" style="background:rgba(239,68,68,0.12)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div></div>
+          <div class="stat-value" id="dashPdfs">0</div>
+        </div>
+      </div>
+
+      <!-- Recent Sessions -->
+      <div class="card" style="padding:14px 16px;">
+        <div class="row-between mb-10">
+          <span class="fw-600 fs-12">Recent Sessions</span>
+          <button class="btn btn-ghost" id="viewAllBtn" style="padding:3px 9px;font-size:10.5px;">View All</button>
+        </div>
+        <div id="recentSessionsWrap"></div>
+      </div>
+    </section>
+
+    <!-- ===== EXTRACTOR ===== -->
+    <section class="section" id="sec-extractor">
+      <div class="page-header mb-12">
+        <h1>Extract Links</h1>
+        <p>Scan links from the currently active browser tab</p>
+      </div>
+
+      <!-- Hero -->
+      <div class="extract-hero mb-12">
+        <div style="font-size:28px;margin-bottom:6px;">🔗</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Active Tab Extraction</div>
+        <div class="fs-11 text-muted mb-12" id="activeTabUrl" style="word-break:break-all;">Ready to extract from the current page</div>
+        <button class="btn btn-primary" id="btnExtract" style="padding:9px 20px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Extract from Tab
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div id="progressWrap" style="display:none;margin-bottom:12px;">
+        <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;">
+          <div id="progressBar" style="height:100%;width:0%;background:var(--accent);transition:width 0.2s;border-radius:2px;"></div>
+        </div>
+      </div>
+
+      <!-- Spinner -->
+      <div id="extractSpinner" style="display:none;align-items:center;gap:8px;margin-bottom:12px;padding:10px 14px;border-radius:10px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);">
+        <div class="spinner"></div>
+        <span class="fs-12">Extracting links…</span>
+      </div>
+
+      <!-- URL history chips -->
+      <div class="card mb-12" style="padding:12px 14px;">
+        <div class="fw-600 fs-12 mb-8">Recent Pages</div>
+        <div class="chips-row" id="urlHistoryChips" style="flex-wrap:wrap;gap:4px;">
+          <span class="fs-11 text-muted">No recent pages yet</span>
+        </div>
+      </div>
+
+      <!-- Options -->
+      <div class="card" style="padding:14px 16px;">
+        <div class="fw-600 fs-12 mb-10">Extraction Options</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <label class="opt-label" onclick="toggleOpt(this,'includeAnchors')">
+            <div class="checkbox checked" id="opt-anchor"></div>
+            <div><div class="fs-12 fw-500">Anchor Links</div><div class="fs-10 text-muted">a[href] elements</div></div>
+          </label>
+          <label class="opt-label" onclick="toggleOpt(this,'includeImages')">
+            <div class="checkbox checked" id="opt-images"></div>
+            <div><div class="fs-12 fw-500">Images</div><div class="fs-10 text-muted">img[src] sources</div></div>
+          </label>
+          <label class="opt-label" onclick="toggleOpt(this,'includeVideos')">
+            <div class="checkbox checked" id="opt-videos"></div>
+            <div><div class="fs-12 fw-500">Videos</div><div class="fs-10 text-muted">video/source tags</div></div>
+          </label>
+          <label class="opt-label" onclick="toggleOpt(this,'includePdfs')">
+            <div class="checkbox checked" id="opt-pdfs"></div>
+            <div><div class="fs-12 fw-500">PDFs &amp; Files</div><div class="fs-10 text-muted">iframe/embed/scripts</div></div>
+          </label>
+          <label class="opt-label" onclick="toggleOpt(this,'removeDuplicates')">
+            <div class="checkbox checked" id="opt-dedup"></div>
+            <div><div class="fs-12 fw-500">Remove Dupes</div><div class="fs-10 text-muted">Deduplicate URLs</div></div>
+          </label>
+          <label class="opt-label" onclick="toggleOpt(this,'normalize')">
+            <div class="checkbox checked" id="opt-normalize"></div>
+            <div><div class="fs-12 fw-500">Normalize URLs</div><div class="fs-10 text-muted">Absolute paths</div></div>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== RESULTS ===== -->
+    <section class="section" id="sec-results">
+      <div class="page-header-row mb-10">
+        <div>
+          <h1>Results</h1>
+          <p class="fs-11 text-muted mt-2" id="resultsSubtitle">No links extracted yet</p>
+        </div>
+        <div class="row gap-6">
+          <!-- Bulk dropdown -->
+          <div style="position:relative;" id="bulkDropWrap">
+            <button class="btn btn-ghost" id="bulkMenuBtn" style="font-size:11.5px;padding:6px 10px;" onclick="toggleDropdown('bulkMenu')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              Bulk
+            </button>
+            <div class="dropdown" id="bulkMenu" style="right:0;min-width:160px;">
+              <button class="dropdown-item" onclick="selectAll();closeDropdowns()">Select All</button>
+              <button class="dropdown-item" onclick="deselectAll();closeDropdowns()">Deselect All</button>
+              <button class="dropdown-item" onclick="favoriteSelected();closeDropdowns()">⭐ Star Selected</button>
+              <button class="dropdown-item" onclick="copySelected();closeDropdowns()">Copy Selected</button>
+              <button class="dropdown-item" onclick="openSelected();closeDropdowns()">Open in Tabs</button>
+              <div class="dropdown-sep"></div>
+              <button class="dropdown-item" style="color:var(--danger)" onclick="deleteSelected();closeDropdowns()">Delete Selected</button>
+            </div>
+          </div>
+          <!-- Export dropdown -->
+          <div style="position:relative;" id="exportDropWrap">
+            <button class="btn btn-primary" style="font-size:11.5px;padding:6px 12px;" onclick="toggleDropdown('exportMenu')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export
+            </button>
+            <div class="dropdown" id="exportMenu" style="right:0;min-width:140px;">
+              <button class="dropdown-item" onclick="exportLinks('TXT');closeDropdowns()">Export TXT</button>
+              <button class="dropdown-item" onclick="exportLinks('CSV');closeDropdowns()">Export CSV</button>
+              <button class="dropdown-item" onclick="exportLinks('JSON');closeDropdowns()">Export JSON</button>
+              <button class="dropdown-item" onclick="exportLinks('HTML');closeDropdowns()">Export HTML</button>
+              <div class="dropdown-sep"></div>
+              <button class="dropdown-item" onclick="copyAllUrls();closeDropdowns()">📋 Copy All URLs</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="input-wrap mb-8">
+        <svg class="input-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="input-field" id="resultsSearch" placeholder="Search by URL, text, or note…">
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="chips-row mb-8" style="flex-wrap:wrap;gap:4px;">
+        <button class="filter-tab active" data-type="all">All <span class="tab-count" id="filterCount-all">0</span></button>
+        <button class="filter-tab" data-type="internal">Internal <span class="tab-count" id="filterCount-internal">0</span></button>
+        <button class="filter-tab" data-type="external">External <span class="tab-count" id="filterCount-external">0</span></button>
+        <button class="filter-tab" data-type="image">Images <span class="tab-count" id="filterCount-image">0</span></button>
+        <button class="filter-tab" data-type="video">Videos <span class="tab-count" id="filterCount-video">0</span></button>
+        <button class="filter-tab" data-type="pdf">Files <span class="tab-count" id="filterCount-pdf">0</span></button>
+      </div>
+
+      <!-- Selection bar -->
+      <div id="selectionBar" style="display:none;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);margin-bottom:8px;font-size:11.5px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span id="selCountLabel">0 selected</span>
+        <span style="flex:1"></span>
+        <button onclick="copySelected()" style="background:none;border:none;color:var(--accent-light);cursor:pointer;font-size:10.5px;font-family:inherit;">Copy</button>
+        <button onclick="openSelected()" style="background:none;border:none;color:var(--accent-light);cursor:pointer;font-size:10.5px;font-family:inherit;">Open</button>
+        <button onclick="favoriteSelected()" style="background:none;border:none;color:#fbbf24;cursor:pointer;font-size:10.5px;font-family:inherit;">Star</button>
+        <button onclick="deleteSelected()" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:10.5px;font-family:inherit;">Delete</button>
+        <button onclick="deselectAll()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:10.5px;font-family:inherit;">✕</button>
+      </div>
+
+      <!-- Links list -->
+      <div class="card" style="padding:4px;">
+        <div id="resultsWrap" style="max-height:340px;overflow-y:auto;"></div>
+      </div>
+    </section>
+
+    <!-- ===== FAVORITES ===== -->
+    <section class="section" id="sec-favorites">
+      <div class="page-header-row mb-12">
+        <div>
+          <h1>Favorites</h1>
+          <p class="fs-11 text-muted mt-2"><span id="favTotalCount">0</span> starred links</p>
+        </div>
+        <div class="row gap-6">
+          <button class="btn btn-ghost" id="exportFavBtn" style="font-size:11.5px;padding:6px 11px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export
+          </button>
+          <button class="btn btn-danger" id="clearFavsBtn" style="font-size:11.5px;padding:6px 11px;">Clear All</button>
+        </div>
+      </div>
+      <div class="card" style="padding:4px;">
+        <div id="favoritesWrap" style="max-height:430px;overflow-y:auto;"></div>
+      </div>
+    </section>
+
+    <!-- ===== ANALYTICS ===== -->
+    <section class="section" id="sec-analytics">
+      <div class="page-header mb-12"><h1>Analytics</h1><p>Insights into your extracted links</p></div>
+
+      <div class="stats-grid mb-12">
+        <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value" id="anaTotal">0</div></div>
+        <div class="stat-card"><div class="stat-label">Unique Domains</div><div class="stat-value" id="anaUnique">0</div></div>
+        <div class="stat-card"><div class="stat-label">Internal</div><div class="stat-value" id="anaInternal">0</div></div>
+        <div class="stat-card"><div class="stat-label">External</div><div class="stat-value" id="anaExternal">0</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div class="card" style="padding:14px;">
+          <div class="fw-600 fs-12 mb-8">By Type</div>
+          <div style="height:180px;"><canvas id="typeChart"></canvas></div>
+        </div>
+        <div class="card" style="padding:14px;">
+          <div class="fw-600 fs-12 mb-8">Top Domains</div>
+          <div style="height:180px;"><canvas id="domainChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:14px;">
+        <div class="fw-600 fs-12 mb-10">Domain Breakdown</div>
+        <div id="domainBreakdownList" style="max-height:200px;overflow-y:auto;"></div>
+      </div>
+    </section>
+
+    <!-- ===== HISTORY ===== -->
+    <section class="section" id="sec-history">
+      <div class="page-header-row mb-10">
+        <div>
+          <h1>History</h1>
+          <p class="fs-11 text-muted mt-2">Click a session to reload it</p>
+        </div>
+        <div class="row gap-6">
+          <button class="btn btn-ghost" id="expAllHistBtn" style="font-size:11.5px;padding:6px 11px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export All
+          </button>
+          <button class="btn btn-danger" id="clearHistBtn" style="font-size:11.5px;padding:6px 11px;">Clear All</button>
+        </div>
+      </div>
+      <div class="input-wrap mb-10">
+        <svg class="input-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="input-field" id="historySearch" placeholder="Search sessions…">
+      </div>
+      <div id="historyWrap" style="max-height:440px;overflow-y:auto;"></div>
+    </section>
+
+    <!-- ===== IMPORT ===== -->
+    <section class="section" id="sec-import">
+      <div class="page-header mb-12"><h1>Import</h1><p>Import links from JSON, CSV, or TXT files</p></div>
+
+      <!-- Drop area -->
+      <div id="dropArea" class="drop-zone mb-12">
+        <input type="file" id="importFileInput" accept=".json,.csv,.txt" style="display:none">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin-bottom:10px;opacity:0.5;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div class="fw-600 fs-13 mb-4">Drop file or click to browse</div>
+        <div class="fs-11 text-muted">JSON backup, CSV, or TXT (one URL per line)</div>
+      </div>
+
+      <!-- Paste area -->
+      <div class="card mb-12" style="padding:14px 16px;">
+        <div class="fw-600 fs-12 mb-8">Or Paste URLs</div>
+        <textarea id="pasteArea" class="input-plain" style="height:90px;resize:none;font-family:monospace;font-size:11px;" placeholder="https://example.com&#10;https://github.com&#10;…one per line"></textarea>
+        <div class="row gap-6 mt-8">
+          <button class="btn btn-primary" id="parsePasteBtn" style="flex:1;font-size:11.5px;">Import URLs</button>
+          <button class="btn btn-ghost" id="clearPasteBtn" style="font-size:11.5px;" onclick="document.getElementById('pasteArea').value=''">Clear</button>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div id="importPreviewWrap" style="display:none;">
+        <div class="card" style="padding:14px 16px;">
+          <div class="fw-600 fs-12 mb-8">Import Preview — <span id="importPreviewCount">0 links</span></div>
+          <div id="importPreviewList" style="margin-bottom:12px;display:flex;flex-direction:column;gap:3px;"></div>
+          <div class="row gap-6">
+            <button class="btn btn-primary" id="confirmImportBtn" style="flex:1;">Confirm Import</button>
+            <button class="btn btn-ghost" id="cancelImportBtn">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SETTINGS ===== -->
+    <section class="section" id="sec-settings">
+      <div class="page-header mb-12"><h1>Settings</h1><p>Customize your extraction experience</p></div>
+
+      <!-- Appearance -->
+      <div class="card mb-10" style="padding:16px 18px;">
+        <div class="fw-600 fs-12 mb-14">Appearance</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <button class="btn btn-ghost active" id="darkModeToggle" style="flex:1;font-size:11.5px;justify-content:center;">
+            🌙 Dark
+          </button>
+          <button class="btn btn-ghost" id="lightModeToggle" style="flex:1;font-size:11.5px;justify-content:center;">
+            ☀️ Light
+          </button>
+        </div>
+      </div>
+
+      <!-- Extraction -->
+      <div class="card mb-10" style="padding:16px 18px;">
+        <div class="fw-600 fs-12 mb-14">Extraction</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="row-between">
+            <div><div class="fs-12 fw-500">Auto-save Results</div><div class="fs-11 text-muted">Save extracted results automatically</div></div>
+            <div class="toggle on" id="autoSaveToggle"></div>
+          </div>
+          <div class="row-between">
+            <div><div class="fs-12 fw-500">Remove Duplicates</div><div class="fs-11 text-muted">Deduplicate URLs automatically</div></div>
+            <div class="toggle on" id="dedupToggle"></div>
+          </div>
+          <div class="row-between">
+            <div><div class="fs-12 fw-500">Filter JS / Mailto</div><div class="fs-11 text-muted">Remove non-HTTP links</div></div>
+            <div class="toggle on" id="filterJsToggle"></div>
+          </div>
+          <div class="row-between">
+            <div><div class="fs-12 fw-500">Normalize URLs</div><div class="fs-11 text-muted">Convert relative to absolute paths</div></div>
+            <div class="toggle on" id="normalizeToggle"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Storage -->
+      <div class="card mb-10" style="padding:16px 18px;">
+        <div class="fw-600 fs-12 mb-14">Storage &amp; Export</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <div class="fs-12 fw-500 mb-6">Max Sessions to Keep</div>
+            <select id="maxSessionsSel" style="width:100%;padding:8px 10px;border-radius:9px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-size:12px;font-family:inherit;outline:none;cursor:pointer;">
+              <option value="10">10 sessions</option>
+              <option value="20" selected>20 sessions</option>
+              <option value="50">50 sessions</option>
+              <option value="100">100 sessions</option>
+            </select>
+          </div>
+          <div>
+            <div class="fs-12 fw-500 mb-6">Default Export Format</div>
+            <select id="defaultFormatSel" style="width:100%;padding:8px 10px;border-radius:9px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-size:12px;font-family:inherit;outline:none;cursor:pointer;">
+              <option>TXT</option><option>CSV</option><option selected>JSON</option><option>HTML</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Management -->
+      <div class="card mb-10" style="padding:16px 18px;">
+        <div class="fw-600 fs-12 mb-12">Data Management</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="btn btn-ghost" id="exportBackupBtn" style="justify-content:flex-start;gap:8px;padding:10px 12px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export All Sessions (JSON Backup)
+          </button>
+          <button class="btn btn-ghost" id="goImportBtn" style="justify-content:flex-start;gap:8px;padding:10px 12px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Import Sessions Backup
+          </button>
+          <button class="btn btn-danger" id="clearAllDataBtn" style="justify-content:flex-start;gap:8px;padding:10px 12px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Clear All Data &amp; History
+          </button>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="card" style="padding:16px 18px;">
+        <div class="fw-600 fs-12 mb-12">About &amp; Storage</div>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--text-secondary);">
+          <div class="row-between"><span>Version</span><span class="mono" style="color:var(--text-primary)">3.0.0</span></div>
+          <div class="row-between"><span>Manifest</span><span class="mono" style="color:var(--text-primary)">V3</span></div>
+          <div class="row-between"><span>Storage Used</span><span class="mono" style="color:var(--text-primary)" id="storageUsedLabel">0 KB</span></div>
+          <div class="row-between"><span>Sessions Saved</span><span class="mono" style="color:var(--text-primary)" id="sessCountLabel">0</span></div>
+          <div class="row-between"><span>Favorites</span><span class="mono" style="color:#fbbf24" id="favCountLabel">0</span></div>
+          <div class="row-between"><span>Total Extracted</span><span class="mono" style="color:var(--text-primary)" id="totalExtLabel">0</span></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===== NOTE MODAL ===== -->
+<div class="modal-overlay" id="noteModal">
+  <div class="modal-box">
+    <div class="row-between mb-12">
+      <span style="font-size:14px;font-weight:700;">Add / Edit Note</span>
+      <button class="btn-icon" id="closeNoteModal"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="mono" id="noteModalUrl" style="font-size:10px;color:var(--text-muted);word-break:break-all;padding:7px 10px;background:var(--bg-card);border-radius:8px;margin-bottom:10px;"></div>
+    <textarea id="noteText" class="input-plain" style="height:90px;resize:none;" placeholder="Add a note about this link…"></textarea>
+    <div class="row gap-6 mt-8">
+      <button class="btn btn-primary" id="saveNoteBtn" style="flex:1;">Save Note</button>
+      <button class="btn btn-ghost" id="cancelNoteBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="chart.min.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>
